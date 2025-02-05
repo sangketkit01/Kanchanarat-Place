@@ -18,4 +18,5 @@ sealed class Screen(val route: String, val name: String, val icon: ImageVector?)
     data object ApartmentDetail:Screen("apartment_detail_screen","รายละเอียดหอพัก",null)
     data object AvailableRoom:Screen("available_room_screen","ห้องพักที่ว่าง",null)
     data object Reservation:Screen("reservation_screen","จองห้องพัก",null)
+    data object MakeReservation:Screen("make_reservation_screen","ทำการจองห้องพัก",null)
 }

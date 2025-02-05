@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.src.kanchanaratplace.AvailableRoomScreen
 import com.src.kanchanaratplace.FirstScreen
 import com.src.kanchanaratplace.ApartmentDetailScreen
+import com.src.kanchanaratplace.MakeReservationScreen
 import com.src.kanchanaratplace.ProfileScreen
 import com.src.kanchanaratplace.ReservationScreen
 
@@ -34,6 +35,10 @@ fun NavGraph(navController : NavHostController){
 
         composable(Screen.Reservation.route) {
             ReservationScreen(navController)
+        }
+
+        composable(Screen.MakeReservation.route) {
+            MakeReservationScreen(navController)
         }
     }
 }
