@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
 import com.src.kanchanaratplace.navigation.BottomBar
 import com.src.kanchanaratplace.navigation.NavGraph
 import com.src.kanchanaratplace.navigation.UnAuthenticationTopBar

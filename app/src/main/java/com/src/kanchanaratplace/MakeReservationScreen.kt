@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.data.MakeReservation
 import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
@@ -58,11 +59,14 @@ fun MakeReservationScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(vertical = 100.dp)
+            .padding(vertical = 80.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
+
+        Spacer(Modifier.height(20.dp))
+
         Row (
             modifier = Modifier
                 .fillMaxWidth()
@@ -205,19 +209,28 @@ fun MakeReservationScreen(navController : NavHostController){
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(70.dp))
 
     }
 
     if(reservationDialog){
         AlertDialog(
+            containerColor = Color.White,
+            modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                .border(
+                    width = 1.dp,
+                    color = Color.LightGray
+                ),
+            shape = RoundedCornerShape(10.dp),
             onDismissRequest = {reservationDialog = false},
             title = { Text("กรอกข้อมูลส่วนตัว") },
             text = {
                 Column {
                     OutlinedTextField(
                         value = name,
-                        onValueChange = {it},
+                        onValueChange = {newName->
+                            name = newName
+                        },
                         label = { Text("กรุณากรอกชื่อ") },
                         modifier = Modifier.padding(10.dp).clip(RoundedCornerShape(10.dp)),
                         shape = RoundedCornerShape(10.dp)
@@ -225,7 +238,9 @@ fun MakeReservationScreen(navController : NavHostController){
 
                     OutlinedTextField(
                         value = surname,
-                        onValueChange = {it},
+                        onValueChange = {newSurname->
+                            surname = newSurname
+                        },
                         label = { Text("นามสกุล") },
                         modifier = Modifier.padding(10.dp)
                             .clip(RoundedCornerShape(10.dp)),
@@ -234,7 +249,9 @@ fun MakeReservationScreen(navController : NavHostController){
 
                     OutlinedTextField(
                         value = phone,
-                        onValueChange = {it},
+                        onValueChange = {newPhone->
+                            phone = newPhone
+                        },
                         label = { Text("เบอร์โทร") },
                         modifier = Modifier.padding(10.dp)
                             .clip(RoundedCornerShape(10.dp)),
@@ -245,8 +262,10 @@ fun MakeReservationScreen(navController : NavHostController){
 
                     OutlinedTextField(
                         value = email,
-                        onValueChange = {it},
-                        label = { Text("เบอร์โทร") },
+                        onValueChange = {newEmail->
+                            email = newEmail
+                        },
+                        label = { Text("อีเมลล์") },
                         modifier = Modifier.padding(10.dp)
                             .clip(RoundedCornerShape(10.dp)),
                         shape = RoundedCornerShape(10.dp),
@@ -258,7 +277,11 @@ fun MakeReservationScreen(navController : NavHostController){
             confirmButton = {
                 FilledTonalButton(
                     onClick = {
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "data", MakeReservation(name,surname,phone,email)
+                        )
 
+                        navController.navigate(Screen.PayReservation.route)
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = Color(94, 144, 255, 255)

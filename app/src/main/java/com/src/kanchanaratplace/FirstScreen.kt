@@ -44,13 +44,14 @@ fun FirstScreen(navController : NavHostController) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier.fillMaxSize()
-            .verticalScroll(scrollState).padding(vertical = 100.dp)
+            .verticalScroll(scrollState).padding(vertical = 80.dp)
             .background(
                 color = Color.White
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
+        Spacer(Modifier.height(20.dp))
         Column(
             modifier = Modifier.fillMaxWidth()
                 .padding(10.dp),
@@ -207,5 +208,6 @@ fun FirstScreen(navController : NavHostController) {
                 }
             }
         }
+        Spacer(Modifier.height(50.dp))
     }
 }

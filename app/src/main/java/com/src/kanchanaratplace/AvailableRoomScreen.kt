@@ -55,11 +55,12 @@ fun AvailableRoomScreen(navController : NavHostController){
     )
     Column (
         modifier = Modifier.fillMaxSize()
-            .verticalScroll(scrollState).padding(vertical = 100.dp)
+            .verticalScroll(scrollState).padding(vertical = 80.dp)
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth()
                 .padding(10.dp),
@@ -219,6 +220,8 @@ fun AvailableRoomScreen(navController : NavHostController){
 
             Spacer(Modifier.height(20.dp))
         }
+
+        Spacer(Modifier.height(50.dp))
     }
 }
 

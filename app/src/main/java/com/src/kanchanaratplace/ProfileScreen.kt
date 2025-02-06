@@ -344,6 +344,6 @@ fun ProfileScreen(navHostController: NavHostController){
                 )
             }
         }
-
+        Spacer(Modifier.height(40.dp))
     }
 }

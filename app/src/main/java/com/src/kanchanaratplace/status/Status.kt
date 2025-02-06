@@ -2,8 +2,9 @@ package com.src.kanchanaratplace.status
 sealed interface StatusType
 
 enum class RoomStatus(val code: Int, val message: String) : StatusType {
-    ROOM_AVAILABLE(1, "Room Available"),
-    ROOM_OCCUPIED(2, "Room Occupied")
+    ROOM_AVAILABLE(1, "ว่าง"),
+    ROOM_OCCUPIED(2, "ไม่ว่าง"),
+    ROOM_RESERVED(12,"จอง")
 }
 
 enum class PaymentStatus(val code: Int, val message: String) : StatusType {
