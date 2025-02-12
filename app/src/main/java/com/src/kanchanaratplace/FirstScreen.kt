@@ -134,6 +134,62 @@ fun FirstScreen(navController : NavHostController) {
             }
         }
 
+        Row (
+            modifier = Modifier.fillMaxWidth()
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.End
+        ){
+            FilledTonalButton(
+                onClick = {
+                    navController.navigate(Screen.AvailableRoom.route)
+                },
+                modifier = Modifier.clip(RoundedCornerShape(20.dp))
+                    .border(
+                        width = 1.5.dp,
+                        color = Color(94, 144, 255, 255),
+                        shape = RoundedCornerShape(20.dp)
+                    ),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "ดูแผนผันหอ",
+                    color = Color(94, 144, 255, 255),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+
+        Row (
+            modifier = Modifier.fillMaxWidth()
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.End
+        ){
+            FilledTonalButton(
+                onClick = {
+                    navController.navigate(Screen.Reservation.route)
+                },
+                modifier = Modifier.clip(RoundedCornerShape(20.dp))
+                    .border(
+                        width = 1.5.dp,
+                        color = Color(94, 144, 255, 255),
+                        shape = RoundedCornerShape(20.dp)
+                    ),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "จองห้องพัก",
+                    color = Color(94, 144, 255, 255),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+
         Column(
             modifier = Modifier.padding(10.dp).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally

@@ -31,12 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.src.kanchanaratplace.data.MakeReservation
 import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
-fun PayReservationScreen(navController : NavHostController){
-    val data = navController.previousBackStackEntry?.savedStateHandle?.get<MakeReservation>("data")
+fun ContractFeeDetailScreen(navController : NavHostController){
     val scrollState = rememberScrollState()
     Column (
         modifier = Modifier
@@ -76,14 +74,14 @@ fun PayReservationScreen(navController : NavHostController){
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = "คุณ ${data?.name}",
+                        text = "คุณใจดี ดีใจจัง",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
 
                 Text(
-                    text = "รายละเอียดการจอง",
+                    text = "รายละเอียดสัญญา",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 20.dp)
@@ -102,11 +100,39 @@ fun PayReservationScreen(navController : NavHostController){
                     modifier = Modifier.fillMaxWidth()
                 ){
                     Text(
-                        text = "เงินมัดจำ/ประกัน",
+                        text = "ราคาห้อง",
                     )
 
                     Text(
-                        text = "1,000 บาท",
+                        text = "4,000 บาท",
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Text(
+                        text = "จ่ายล่วงหน้า"
+                    )
+
+                    Text(
+                        text = "4,000 บาท"
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Text(
+                        text = "เงินมัดจำส่วนที่เหลือ"
+                    )
+
+                    Text(
+                        text = "3,000 บาท"
                     )
                 }
 
@@ -121,7 +147,7 @@ fun PayReservationScreen(navController : NavHostController){
                     )
 
                     Text(
-                        text = "1,000 บาท",
+                        text = "11,000 บาท",
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -147,7 +173,7 @@ fun PayReservationScreen(navController : NavHostController){
                     )
 
                     Text(
-                        text = "1,000 บาท",
+                        text = "11,000 บาท",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -163,7 +189,7 @@ fun PayReservationScreen(navController : NavHostController){
         ){
             FilledTonalButton(
                 onClick = {
-
+                    navController.navigate(Screen.ReservationStatus.route)
                 },
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = Color.White
@@ -188,7 +214,7 @@ fun PayReservationScreen(navController : NavHostController){
 
             FilledTonalButton(
                 onClick = {
-                    navController.navigate(Screen.PayReservationQR.route)
+                    navController.navigate(Screen.ContractPayQR.route)
                 },
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = Color(94, 144, 255, 255)

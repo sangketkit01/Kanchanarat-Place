@@ -1,5 +1,6 @@
 package com.src.kanchanaratplace
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,6 +46,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.api.MemberAPI
+import com.src.kanchanaratplace.data.Member
+import com.src.kanchanaratplace.navigation.Screen
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
 fun LoginScreen(navController : NavHostController){
@@ -51,6 +59,10 @@ fun LoginScreen(navController : NavHostController){
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val memberClient = MemberAPI.create()
+    val context = LocalContext.current.applicationContext
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -171,7 +183,27 @@ fun LoginScreen(navController : NavHostController){
 
                 FilledTonalButton(
                     onClick = {
+                        memberClient.LoginVerify(username,password)
+                            .enqueue(object : Callback<Member>{
+                                override fun onResponse(
+                                    call: Call<Member>,
+                                    response: Response<Member>
+                                ) {
+                                    if (response.isSuccessful){
+                                        Toast.makeText(context,"เข้าสู่ระบบสำเร็จ",Toast.LENGTH_SHORT)
+                                            .show()
+                                        navController.navigate(Screen.First.route)
+                                    }else{
+                                        Toast.makeText(context,"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
 
+                                override fun onFailure(call: Call<Member>, t: Throwable) {
+                                    Toast.makeText(context,"Error onFailure: ${t.message}",Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            })
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = Color(94, 144, 255, 255)
