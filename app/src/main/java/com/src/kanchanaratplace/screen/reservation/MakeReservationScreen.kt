@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.reservation
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -16,11 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,10 +29,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.R
+import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.component.BlueWhiteButton
+import com.src.kanchanaratplace.component.WhiteBlueButton
 import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
-fun ContractFeeScreen(navController : NavHostController){
+fun MakeReservationScaffold(navController: NavHostController){
+    BaseScaffold(navController) {
+        MakeReservationScreen(navController)
+    }
+}
+
+@Composable
+fun MakeReservationScreen(navController : NavHostController){
+    val room = navController.previousBackStackEntry?.savedStateHandle?.get<String>("room")
     val scrollState = rememberScrollState()
 
     Column (
@@ -78,7 +88,7 @@ fun ContractFeeScreen(navController : NavHostController){
                     fontWeight = FontWeight.SemiBold
                 )
 
-                Text("ห้อง 102")
+                Text("ห้อง $room")
             }
         }
 
@@ -115,7 +125,7 @@ fun ContractFeeScreen(navController : NavHostController){
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "จ่ายล่วงหน้า", fontSize = 16.sp)
+                    Text(text = "เงินมัดจำ/ประกัน", fontSize = 16.sp)
                     Text(text = "4,000 บาท", fontSize = 16.sp)
                 }
 
@@ -123,8 +133,8 @@ fun ContractFeeScreen(navController : NavHostController){
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "เงินมัดจำส่วนที่เหลือ", fontSize = 16.sp)
-                    Text(text = "3,000 บาท", fontSize = 16.sp)
+                    Text(text = "จ่ายล่วงหน้า", fontSize = 16.sp)
+                    Text(text = "4,000 บาท", fontSize = 16.sp)
                 }
 
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
@@ -139,7 +149,7 @@ fun ContractFeeScreen(navController : NavHostController){
                         fontSize = 16.sp
                     )
                     Text(
-                        text = "11,000 บาท",
+                        text = "12,000 บาท",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -149,49 +159,24 @@ fun ContractFeeScreen(navController : NavHostController){
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        FilledTonalButton(
+        WhiteBlueButton(
+            text = "กลับไปหน้าก่อนหน้านี้",
             onClick = {
-                navController.navigate(Screen.ReservationStatus.route)
-            },
-            colors = ButtonDefaults.filledTonalButtonColors(
-                containerColor = Color.White
-            ),
-            modifier = Modifier
-                .border(
-                    width = 1.5.dp,
-                    color = Color(94, 144, 255, 255),
-                    shape = RoundedCornerShape(50.dp)
-                )
-                .width(347.dp).height(47.dp)
-        ) {
-            Text(
-                text = "กลับไปหน้าก่อนหน้านี้",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(94, 144, 255, 255)
-            )
-        }
+                navController.navigate(Screen.Reservation.route)
+            }
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        FilledTonalButton(
+        BlueWhiteButton(
+            text = "จองห้องพัก",
             onClick = {
-                navController.navigate(Screen.ContractFeeDetail.route)
-            },
-            colors = ButtonDefaults.filledTonalButtonColors(
-                containerColor = Color(94, 144, 255, 255)
-            ),
-            modifier = Modifier.width(347.dp).height(47.dp)
-        ) {
-            Text(
-                text = "ไปหน้าต่อไป",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White
-            )
-        }
+                navController.navigate(Screen.ReservationDetail.route)
+            }
+        )
 
         Spacer(modifier = Modifier.height(70.dp))
 
     }
+
 }

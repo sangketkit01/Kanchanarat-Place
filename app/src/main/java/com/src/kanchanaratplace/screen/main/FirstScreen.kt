@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -26,18 +25,35 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.R
+import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
+import com.src.kanchanaratplace.navigation.BottomBar
+import com.src.kanchanaratplace.navigation.NavGraph
 import com.src.kanchanaratplace.navigation.Screen
+import com.src.kanchanaratplace.navigation.UnAuthenticationTopBar
+import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+
+@Composable
+fun FirstScaffold(navController: NavHostController){
+    BaseScaffold(navController) {
+        FirstScreen(navController)
+    }
+}
 
 @Composable
 fun FirstScreen(navController : NavHostController) {

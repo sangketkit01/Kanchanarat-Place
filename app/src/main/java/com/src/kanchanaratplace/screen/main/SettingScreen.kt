@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.main
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -36,16 +36,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+
+@Composable
+fun SettingScaffold(navController: NavHostController){
+    BaseScaffold(navController) {
+        SettingScreen(navController)
+    }
+}
+
 
 @Composable
 fun SettingScreen(navController : NavHostController){

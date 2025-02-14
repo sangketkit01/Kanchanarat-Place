@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.contract
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -15,38 +15,45 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.src.kanchanaratplace.data.MakeReservation
+import com.src.kanchanaratplace.R
+import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.component.SampleScaffold
+import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
+import com.src.kanchanaratplace.navigation.BottomBar
 import com.src.kanchanaratplace.navigation.Screen
+import com.src.kanchanaratplace.navigation.UnAuthenticationTopBar
+import com.src.kanchanaratplace.screen.main.FirstScreen
+import com.src.kanchanaratplace.screen.reservation.ReservationStatusScreen
+import com.src.kanchanaratplace.session.MemberSharePreferencesManager
 
 @Composable
-fun MakeReservationScreen(navController : NavHostController){
-    val room = navController.previousBackStackEntry?.savedStateHandle?.get<String>("room")
+fun ContractFeeScaffold(navController : NavHostController){
+    SampleScaffold(navController,"ชำระค่าบริการ") {
+        ContractFeeScreen(navController)
+    }
+}
+
+@Composable
+fun ContractFeeScreen(navController : NavHostController){
     val scrollState = rememberScrollState()
 
     Column (
@@ -90,7 +97,7 @@ fun MakeReservationScreen(navController : NavHostController){
                     fontWeight = FontWeight.SemiBold
                 )
 
-                Text("ห้อง $room")
+                Text("ห้อง 102")
             }
         }
 
@@ -127,7 +134,7 @@ fun MakeReservationScreen(navController : NavHostController){
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "เงินมัดจำ/ประกัน", fontSize = 16.sp)
+                    Text(text = "จ่ายล่วงหน้า", fontSize = 16.sp)
                     Text(text = "4,000 บาท", fontSize = 16.sp)
                 }
 
@@ -135,8 +142,8 @@ fun MakeReservationScreen(navController : NavHostController){
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "จ่ายล่วงหน้า", fontSize = 16.sp)
-                    Text(text = "4,000 บาท", fontSize = 16.sp)
+                    Text(text = "เงินมัดจำส่วนที่เหลือ", fontSize = 16.sp)
+                    Text(text = "3,000 บาท", fontSize = 16.sp)
                 }
 
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
@@ -151,7 +158,7 @@ fun MakeReservationScreen(navController : NavHostController){
                         fontSize = 16.sp
                     )
                     Text(
-                        text = "12,000 บาท",
+                        text = "11,000 บาท",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -163,7 +170,7 @@ fun MakeReservationScreen(navController : NavHostController){
 
         FilledTonalButton(
             onClick = {
-                navController.navigate(Screen.Reservation.route)
+                navController.navigate(Screen.ReservationStatus.route)
             },
             colors = ButtonDefaults.filledTonalButtonColors(
                 containerColor = Color.White
@@ -188,7 +195,7 @@ fun MakeReservationScreen(navController : NavHostController){
 
         FilledTonalButton(
             onClick = {
-                navController.navigate(Screen.ReservationDetail.route)
+                navController.navigate(Screen.ContractFeeDetail.route)
             },
             colors = ButtonDefaults.filledTonalButtonColors(
                 containerColor = Color(94, 144, 255, 255)
@@ -196,7 +203,7 @@ fun MakeReservationScreen(navController : NavHostController){
             modifier = Modifier.width(347.dp).height(47.dp)
         ) {
             Text(
-                text = "จองห้องพัก",
+                text = "ไปหน้าต่อไป",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White
@@ -206,5 +213,4 @@ fun MakeReservationScreen(navController : NavHostController){
         Spacer(modifier = Modifier.height(70.dp))
 
     }
-
 }

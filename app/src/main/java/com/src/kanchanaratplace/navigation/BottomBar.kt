@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
-import com.src.kanchanaratplace.Component.LoginRequiredDialog
-import com.src.kanchanaratplace.Component.UnAuthorizedAlert
+import com.src.kanchanaratplace.component.LoginRequiredDialog
+import com.src.kanchanaratplace.component.UnAuthorizedAlert
 
 @Composable
 fun BottomBar(navController : NavHostController){

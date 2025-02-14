@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.reservation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,10 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,7 +30,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.component.BlueWhiteButton
+import com.src.kanchanaratplace.component.SampleScaffold
+import com.src.kanchanaratplace.component.WhiteBlueButton
 import com.src.kanchanaratplace.navigation.Screen
+
+@Composable
+fun ReservationStatusScaffold(navController: NavHostController){
+    SampleScaffold(navController,"ตรวจสอบการดำเนินการ") {
+        ReservationStatusScreen(navController)
+    }
+}
 
 @Composable
 fun ReservationStatusScreen(navController : NavHostController){
@@ -71,48 +79,22 @@ fun ReservationStatusScreen(navController : NavHostController){
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             if(currentStep == 3){
-                FilledTonalButton(
+                WhiteBlueButton(
+                    text = "ดำเนินการทำสัญญา",
                     onClick = {
                         navController.navigate(Screen.ContractFee.route)
-                    },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .border(
-                            width = 1.5.dp,
-                            color = Color(94, 144, 255, 255),
-                            shape = RoundedCornerShape(50.dp)
-                        )
-                        .width(347.dp).height(47.dp)
-                ) {
-                    Text(
-                        text = "ดำเนินการทำสัญญา",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(94, 144, 255, 255)
-                    )
-                }
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            FilledTonalButton(
+            BlueWhiteButton(
+                text = "กลับไปที่หน้าหลัก",
                 onClick = {
                     navController.navigate(Screen.First.route)
-                },
-                colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = Color(94, 144, 255, 255)
-                ),
-                modifier = Modifier.width(347.dp).height(47.dp)
-            ) {
-                Text(
-                    text = "กลับไปที่หน้าหลัก",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-            }
+                }
+            )
 
             Spacer(modifier = Modifier.height(70.dp))
         }
@@ -132,22 +114,33 @@ fun StepProgressIndicator(currentStep: Int, totalSteps: Int = 3) {
                     modifier = Modifier
                         .width(62.dp)
                         .height(2.dp)
-                        .background(if (i <= currentStep) Color(94, 144, 255, 255) else Color.LightGray)
+                        .background(
+                            if (i <= currentStep) Color(94, 144, 255, 255)
+                            else Color.LightGray
+                        )
                 )
             }
             Box(
                 modifier = Modifier
                     .size(60.dp)
                     .background(
-                        color = if (i <= currentStep) Color(94, 144, 255, 255) else Color.White,
+                        color = if (i <= currentStep) Color(94, 144, 255, 255)
+                        else Color.White,
+
                         shape = CircleShape
                     )
-                    .border(1.dp, if (i <= currentStep) Color(94, 144, 255, 255) else Color.LightGray, CircleShape),
+                    .border(
+                        1.dp,
+                        if (i <= currentStep) Color(94, 144, 255, 255)
+                        else Color.LightGray,
+                        CircleShape
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = i.toString(),
-                    color = if (i <= currentStep) Color.White else Color(94, 144, 255, 255),
+                    color = if (i <= currentStep) Color.White
+                    else Color(94, 144, 255, 255),
                     fontWeight = FontWeight.Bold
                 )
             }

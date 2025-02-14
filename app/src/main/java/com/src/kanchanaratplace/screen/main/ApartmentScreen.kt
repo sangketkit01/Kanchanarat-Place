@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.component.BaseScaffold
+
+@Composable
+fun ApartmentScaffold(navController: NavHostController){
+    BaseScaffold(navController) {
+        ApartmentScreen(navController)
+    }
+}
 
 @Composable
 fun ApartmentScreen(navController : NavHostController){

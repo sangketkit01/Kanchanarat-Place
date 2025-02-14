@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.reservation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,10 +26,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -43,15 +40,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.R
+import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.navigation.Screen
+
+@Composable
+fun AvailableRoomScaffold(navController: NavHostController){
+    BaseScaffold(navController) {
+        AvailableRoomScreen(navController)
+    }
+}
 
 @Composable
 fun AvailableRoomScreen(navController : NavHostController){
     val scrollState = rememberScrollState()
     var selectedFloor by  remember { mutableIntStateOf(1) }
     val examplePic = listOf(
-        R.drawable.example_pic6,R.drawable.example_pic7,R.drawable.example_pic8
-        ,R.drawable.example_pic9
+        R.drawable.example_pic6, R.drawable.example_pic7, R.drawable.example_pic8
+        , R.drawable.example_pic9
     )
     Column (
         modifier = Modifier.fillMaxSize()
@@ -83,7 +89,7 @@ fun AvailableRoomScreen(navController : NavHostController){
             Spacer(modifier = Modifier.width(10.dp))
 
             Text(
-                text = "ห้องว่าง",
+                text = "แผนผังหอพัก",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold
             )

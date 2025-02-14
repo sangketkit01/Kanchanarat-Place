@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.reservation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,10 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.data.MakeReservation
 import com.src.kanchanaratplace.data_util.Payment
 import com.src.kanchanaratplace.navigation.Screen
-import com.src.kanchanaratplace.Component.FeeDetail
+import com.src.kanchanaratplace.component.FeeDetail
+import com.src.kanchanaratplace.component.SampleScaffold
+
+@Composable
+fun PayReservationScaffold(navController: NavHostController){
+    SampleScaffold(navController,"ชำระค่าบริการ") {
+        PayReservationScreen(navController)
+    }
+}
 
 @Composable
 fun PayReservationScreen(navController : NavHostController){
@@ -41,10 +50,14 @@ fun PayReservationScreen(navController : NavHostController){
         Spacer(modifier = Modifier.height(40.dp))
 
         navController.currentBackStackEntry?.savedStateHandle?.set(
+            "previous_route" , Screen.PayReservation.route
+        )
+
+        navController.currentBackStackEntry?.savedStateHandle?.set(
             "before",Screen.PayReservation.route
         )
         navController.currentBackStackEntry?.savedStateHandle?.set(
-            "next",Screen.ReservationPaymentStatus.route
+            "next",Screen.Status.route
         )
 
         FeeDetail(

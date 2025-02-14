@@ -4,27 +4,48 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.src.kanchanaratplace.ApartmentContractScreen
-import com.src.kanchanaratplace.AvailableRoomScreen
-import com.src.kanchanaratplace.FirstScreen
-import com.src.kanchanaratplace.ApartmentDetailScreen
-import com.src.kanchanaratplace.ApartmentScreen
-import com.src.kanchanaratplace.ChatScreen
-import com.src.kanchanaratplace.ContractFeeDetailScreen
-import com.src.kanchanaratplace.ContractFeeScreen
-import com.src.kanchanaratplace.ContractPaymentStatusScreen
-import com.src.kanchanaratplace.LoginScreen
-import com.src.kanchanaratplace.MakeReservationScreen
-import com.src.kanchanaratplace.NotificationScreen
-import com.src.kanchanaratplace.PayReservationQRScreen
-import com.src.kanchanaratplace.PayReservationScreen
-import com.src.kanchanaratplace.ProfileScreen
-import com.src.kanchanaratplace.QRCodeScreen
-import com.src.kanchanaratplace.ReservationDetailScreen
-import com.src.kanchanaratplace.ReservationPaymentStatusScreen
-import com.src.kanchanaratplace.ReservationScreen
-import com.src.kanchanaratplace.ReservationStatusScreen
-import com.src.kanchanaratplace.SettingScreen
+import com.src.kanchanaratplace.screen.contract.ContractFeeDetailScaffold
+import com.src.kanchanaratplace.screen.main.ApartmentContractScreen
+import com.src.kanchanaratplace.screen.reservation.AvailableRoomScreen
+import com.src.kanchanaratplace.screen.main.FirstScreen
+import com.src.kanchanaratplace.screen.main.ApartmentDetailScreen
+import com.src.kanchanaratplace.screen.main.ApartmentScreen
+import com.src.kanchanaratplace.screen.main.ChatScreen
+import com.src.kanchanaratplace.screen.reservation.CheckReservationScreen
+import com.src.kanchanaratplace.screen.contract.ContractFeeDetailScreen
+import com.src.kanchanaratplace.screen.contract.ContractFeeScaffold
+import com.src.kanchanaratplace.screen.contract.ContractFeeScreen
+import com.src.kanchanaratplace.screen.main.ApartmentContractScaffold
+import com.src.kanchanaratplace.screen.main.ApartmentDetailScaffold
+import com.src.kanchanaratplace.screen.main.ApartmentScaffold
+import com.src.kanchanaratplace.screen.main.ChatScaffold
+import com.src.kanchanaratplace.screen.main.FirstScaffold
+import com.src.kanchanaratplace.screen.main.LoginScaffold
+import com.src.kanchanaratplace.screen.main.LoginScreen
+import com.src.kanchanaratplace.screen.main.NotificationScaffold
+import com.src.kanchanaratplace.screen.reservation.MakeReservationScreen
+import com.src.kanchanaratplace.screen.main.NotificationScreen
+import com.src.kanchanaratplace.screen.main.ProfileScaffold
+import com.src.kanchanaratplace.screen.reservation.PayReservationScreen
+import com.src.kanchanaratplace.screen.main.ProfileScreen
+import com.src.kanchanaratplace.screen.main.SettingScaffold
+import com.src.kanchanaratplace.screen.share.QRCodeScreen
+import com.src.kanchanaratplace.screen.reservation.ReservationDetailScreen
+import com.src.kanchanaratplace.screen.reservation.ReservationScreen
+import com.src.kanchanaratplace.screen.reservation.ReservationStatusScreen
+import com.src.kanchanaratplace.screen.main.SettingScreen
+import com.src.kanchanaratplace.screen.owner.BillsScaffold
+import com.src.kanchanaratplace.screen.owner.BillsScreen
+import com.src.kanchanaratplace.screen.reservation.AvailableRoomScaffold
+import com.src.kanchanaratplace.screen.reservation.CheckReservationScaffold
+import com.src.kanchanaratplace.screen.reservation.MakeReservationScaffold
+import com.src.kanchanaratplace.screen.reservation.PayReservationScaffold
+import com.src.kanchanaratplace.screen.reservation.ReservationDetailScaffold
+import com.src.kanchanaratplace.screen.reservation.ReservationScaffold
+import com.src.kanchanaratplace.screen.reservation.ReservationStatusScaffold
+import com.src.kanchanaratplace.screen.share.QrCodeScaffold
+import com.src.kanchanaratplace.screen.share.StatusScaffold
+import com.src.kanchanaratplace.screen.share.StatusScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -33,83 +54,88 @@ fun NavGraph(navController: NavHostController) {
         startDestination = Screen.First.route
     ) {
         composable(Screen.Login.route) {
-            LoginScreen(navController)
+            LoginScaffold(navController)
         }
 
         composable(Screen.Setting.route) {
-            SettingScreen(navController)
+            SettingScaffold(navController)
         }
 
         composable(Screen.First.route) {
-            FirstScreen(navController)
+            FirstScaffold(navController)
         }
 
         composable(Screen.Apartment.route) {
-            ApartmentScreen(navController)
+            ApartmentScaffold(navController)
         }
 
         composable(Screen.Chat.route) {
-            ChatScreen(navController)
+            ChatScaffold(navController)
         }
 
         composable(Screen.Profile.route) {
-            ProfileScreen(navController)
+            ProfileScaffold(navController)
         }
 
         composable(Screen.Notification.route) {
-            NotificationScreen(navController)
+            NotificationScaffold(navController)
         }
 
         composable(Screen.ApartmentDetail.route) {
-            ApartmentDetailScreen(navController)
+           ApartmentDetailScaffold(navController)
         }
 
         composable(Screen.ApartmentContract.route) {
-            ApartmentContractScreen(navController)
+            ApartmentContractScaffold(navController)
         }
 
         composable(Screen.AvailableRoom.route) {
-            AvailableRoomScreen(navController)
+            AvailableRoomScaffold(navController)
         }
 
         composable(Screen.Reservation.route) {
-            ReservationScreen(navController)
+            ReservationScaffold(navController)
         }
 
         composable(Screen.MakeReservation.route) {
-            MakeReservationScreen(navController)
+            MakeReservationScaffold(navController)
         }
 
         composable(Screen.PayReservation.route) {
-            PayReservationScreen(navController)
+            PayReservationScaffold(navController)
         }
 
         composable(Screen.ReservationDetail.route) {
-            ReservationDetailScreen(navController)
+            ReservationDetailScaffold(navController)
         }
 
         composable(Screen.QrCode.route) {
-            QRCodeScreen(navController)
-        }
-
-        composable(Screen.ReservationPaymentStatus.route) {
-            ReservationPaymentStatusScreen(navController)
+            QrCodeScaffold(navController)
         }
 
         composable(Screen.ReservationStatus.route) {
-            ReservationStatusScreen(navController)
+            ReservationStatusScaffold(navController)
+        }
+
+        composable(Screen.CheckReservation.route){
+            CheckReservationScaffold(navController)
         }
 
         composable(Screen.ContractFee.route) {
-            ContractFeeScreen(navController)
+            ContractFeeScaffold(navController)
         }
 
         composable(Screen.ContractFeeDetail.route) {
-            ContractFeeDetailScreen(navController)
+            ContractFeeDetailScaffold(navController)
         }
 
-        composable(Screen.ContractPaymentStatus.route) {
-            ContractPaymentStatusScreen(navController)
+        composable(Screen.Status.route) {
+            StatusScaffold(navController)
         }
+
+        composable(Screen.Bills.route) {
+            BillsScaffold(navController)
+        }
+
     }
 }

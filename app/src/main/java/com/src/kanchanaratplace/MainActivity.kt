@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KanchanaratPlaceTheme {
-                MyScaffold()
+                val navController = rememberNavController()
+                NavGraph(navController)
             }
         }
     }

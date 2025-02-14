@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace.Component
+package com.src.kanchanaratplace.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement

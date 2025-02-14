@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.main
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -31,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,12 +49,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.api.MemberAPI
+import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.data.Member
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+@Composable
+fun LoginScaffold(navController: NavHostController){
+    BaseScaffold(navController) {
+        LoginScreen(navController)
+    }
+}
 
 @Composable
 fun LoginScreen(navController : NavHostController){

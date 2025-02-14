@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace.Component
+package com.src.kanchanaratplace.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -154,51 +152,26 @@ fun FeeDetail(navController : NavHostController ,name : String? ,
     Spacer(modifier = Modifier.height(30.dp))
     Column (
         modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
-        FilledTonalButton(
+        WhiteBlueButton(
+            text = "กลับไปหน้าก่อนหน้านี้",
             onClick = {
                 if (before != null) {
                     navController.navigate(before)
                 }
-            },
-            colors = ButtonDefaults.filledTonalButtonColors(
-                containerColor = Color.White
-            ),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
-                .height(47.dp)
-                .border(
-                    width = 1.5.dp,
-                    color = Color(94, 144, 255, 255),
-                    shape = RoundedCornerShape(50.dp)
-                )
-        ) {
-            Text(
-                text = "กลับไปหน้าก่อนหน้านี้",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(94, 144, 255, 255)
-            )
-        }
+            }
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        FilledTonalButton(
+        BlueWhiteButton(
+            text = "ดำเนินการชำระเงิน",
             onClick = {
                 if (next != null) {
                     navController.navigate(next)
                 }
-            },
-            colors = ButtonDefaults.filledTonalButtonColors(
-                containerColor = Color(94, 144, 255, 255)
-            ),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).height(47.dp)
-        ) {
-            Text(
-                text = "ดำเนินการชำระเงิน",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White
-            )
-        }
+            }
+        )
     }
 }

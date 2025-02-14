@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.main
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -20,24 +20,42 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.R
+import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.component.BlueWhiteButton
+import com.src.kanchanaratplace.component.SampleScaffold
+import com.src.kanchanaratplace.component.WhiteBlueButton
+import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
+import com.src.kanchanaratplace.navigation.BottomBar
 import com.src.kanchanaratplace.navigation.Screen
+import com.src.kanchanaratplace.navigation.UnAuthenticationTopBar
+import com.src.kanchanaratplace.screen.reservation.ReservationStatusScreen
+import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+
+@Composable
+fun ApartmentContractScaffold(navController : NavHostController){
+    SampleScaffold(navController,"ช่องทางการติดต่อ") {
+        ApartmentContractScreen(navController)
+    }
+}
 
 @Composable
 fun ApartmentContractScreen(navController : NavHostController){
@@ -178,47 +196,21 @@ fun ApartmentContractScreen(navController : NavHostController){
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            FilledTonalButton(
+            WhiteBlueButton(
+                text = "กลับไปที่หน้าหลัก",
                 onClick = {
                     navController.navigate(Screen.First.route)
-                },
-                colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = Color.White
-                ),
-                modifier = Modifier
-                    .border(
-                        width = 1.5.dp,
-                        color = Color(94, 144, 255, 255),
-                        shape = RoundedCornerShape(50.dp)
-                    )
-                    .width(347.dp).height(47.dp)
-            ) {
-                Text(
-                    text = "กลับไปที่หน้าหลัก",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(94, 144, 255, 255)
-                )
-            }
+                }
+            )
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            FilledTonalButton(
+            BlueWhiteButton(
+                text = "เข้าสู่ระบบ",
                 onClick = {
                     navController.navigate(Screen.Login.route)
-                },
-                colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = Color(94, 144, 255, 255)
-                ),
-                modifier = Modifier.width(347.dp).height(47.dp)
-            ) {
-                Text(
-                    text = "เข้าสู่ระบบ",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-            }
+                }
+            )
 
             Spacer(modifier = Modifier.height(70.dp))
         }

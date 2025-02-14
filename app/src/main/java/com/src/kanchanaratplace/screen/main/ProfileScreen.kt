@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace
+package com.src.kanchanaratplace.screen.main
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -32,6 +32,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.R
+import com.src.kanchanaratplace.component.BaseScaffold
+
+@Composable
+fun ProfileScaffold(navController : NavHostController){
+    BaseScaffold(navController) {
+        ProfileScreen(navController)
+    }
+}
 
 @Composable
 fun ProfileScreen(navHostController: NavHostController){
