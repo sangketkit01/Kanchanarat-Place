@@ -26,16 +26,16 @@ sealed class Screen(val route: String, val name: String, val icon: Any?){
     data object ApartmentContract:Screen("apartment_contract","ช่องทางการติดต่อหอพัก",null)
     data object AvailableRoom:Screen("available_room_screen","ห้องพักที่ว่าง",null)
 
+    data object QrCode:Screen("qr_code_screen","แสกนคิวอาร์โค้ด",null)
+
     data object Reservation:Screen("reservation_screen","จองห้องพัก",null)
     data object ReservationDetail:Screen("reservation_detail_screen","กรอกรายละเอียดการจอง",null)
     data object MakeReservation:Screen("make_reservation_screen","ทำการจองห้องพัก",null)
     data object PayReservation:Screen("pay_reservation_screen","ชำระค่าจองห้องพัก",null)
-    data object PayReservationQR:Screen("pay_reseravation_qr_screen","โอนชำระค่าจองหอพัก",null)
     data object ReservationPaymentStatus:Screen("reservation_payment_status_screen","สถานะการชำระเงินการจองหอพัก",null)
     data object ReservationStatus:Screen("reservation_status_screen","สถานะการจองหอพัก",null)
 
     data object ContractFee:Screen("contract_fee_screen","ค่าสัญญาหอพัก",null)
     data object ContractFeeDetail:Screen("contract_fee_detail_screen","รายละเอียดสัญญาหอพัก",null)
-    data object ContractPayQR:Screen("contract_pay_qr_screen","โอนชำระค่าสัญญา",null)
     data object ContractPaymentStatus:Screen("contract_payment_status_screen","สถานะการโอนชำระค่าสัญญา",null)
 }

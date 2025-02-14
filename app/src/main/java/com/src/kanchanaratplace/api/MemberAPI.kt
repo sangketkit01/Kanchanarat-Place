@@ -11,7 +11,7 @@ import retrofit2.http.POST
 interface MemberAPI {
     @FormUrlEncoded
     @POST("/login_verify")
-    fun LoginVerify(
+    fun loginVerify(
         @Field("username") username : String,
         @Field("password") password : String
     ) : Call<Member>

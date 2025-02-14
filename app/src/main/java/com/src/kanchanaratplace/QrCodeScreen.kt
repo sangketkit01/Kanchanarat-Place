@@ -32,10 +32,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.src.kanchanaratplace.navigation.Screen
+import com.src.kanchanaratplace.Component.QRCodeContent
 
 @Composable
-fun ContractPayQRScreen(navController : NavHostController){
+fun QRCodeScreen(navController : NavHostController){
+    val before = navController.previousBackStackEntry?.savedStateHandle?.get<String>("before")
+    val next = navController.previousBackStackEntry?.savedStateHandle?.get<String>("next")
+
     val scrollState = rememberScrollState()
 
     Column (
@@ -151,7 +154,9 @@ fun ContractPayQRScreen(navController : NavHostController){
         ){
             FilledTonalButton(
                 onClick = {
-                    navController.navigate(Screen.ContractPayQR.route)
+                    if (before != null) {
+                        navController.navigate(before)
+                    }
                 },
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = Color.White
@@ -176,7 +181,9 @@ fun ContractPayQRScreen(navController : NavHostController){
 
             FilledTonalButton(
                 onClick = {
-                    navController.navigate(Screen.ContractPaymentStatus.route)
+                    if (next != null) {
+                        navController.navigate(next)
+                    }
                 },
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = Color(94, 144, 255, 255)
@@ -190,9 +197,9 @@ fun ContractPayQRScreen(navController : NavHostController){
                     color = Color.White
                 )
             }
-
-            Spacer(modifier = Modifier.height(70.dp))
         }
 
-    }
+        Spacer(modifier = Modifier.height(70.dp))
+        }
+
 }

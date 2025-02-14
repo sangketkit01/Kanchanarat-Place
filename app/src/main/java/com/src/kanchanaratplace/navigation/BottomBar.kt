@@ -1,10 +1,7 @@
 package com.src.kanchanaratplace.navigation
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -12,21 +9,33 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import com.src.kanchanaratplace.Component.LoginRequiredDialog
+import com.src.kanchanaratplace.Component.UnAuthorizedAlert
 
 @Composable
 fun BottomBar(navController : NavHostController){
     val navigationItems = listOf(Screen.First,Screen.Apartment,Screen.Chat,Screen.Profile,Screen.Notification)
     var selectedScreen by remember { mutableIntStateOf(0) }
+
+    val context = LocalContext.current.applicationContext
+
+    lateinit var sharePreferences : MemberSharePreferencesManager
+    sharePreferences = MemberSharePreferencesManager(context)
+
+    var alertDialog by remember { mutableStateOf(false) }
+    var notAuthorizedAlert by remember { mutableStateOf(false) }
 
     NavigationBar(
         containerColor = Color(94, 144, 255, 255),
@@ -58,11 +67,42 @@ fun BottomBar(navController : NavHostController){
                 },
                 selected = false,
                 onClick = {
-                    selectedScreen = index
-                    navController.navigate(screen.route)
+                    if(screen.route != Screen.First.route && !sharePreferences.loggedIn){
+                        alertDialog = true
+                    }else if (screen.route == Screen.Apartment.route && sharePreferences.member?.role != "Owner"){
+                        notAuthorizedAlert = true
+                    }
+                    else{
+                        selectedScreen = index
+                        navController.navigate(screen.route)
+                    }
+
                 },
             )
         }
     }
 
+    if(alertDialog){
+        LoginRequiredDialog(
+            showDialog = alertDialog,
+            onDismiss = {alertDialog = false},
+            onNavigateToHome = {
+                alertDialog = false
+                navController.navigate(Screen.First.route)
+            },
+            onNavigateToLogin = {
+                alertDialog = false
+                navController.navigate(Screen.Login.route)
+            }
+        )
+    }
+
+    if(notAuthorizedAlert){
+        UnAuthorizedAlert(
+            notAuthorizedAlert,
+            onDismiss = {notAuthorizedAlert = false}
+        )
+    }
+
 }
+

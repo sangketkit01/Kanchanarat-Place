@@ -28,6 +28,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,10 +47,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.api.MemberAPI
 import com.src.kanchanaratplace.data.Member
 import com.src.kanchanaratplace.navigation.Screen
+import com.src.kanchanaratplace.session.MemberSharePreferencesManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -62,6 +66,29 @@ fun LoginScreen(navController : NavHostController){
 
     val memberClient = MemberAPI.create()
     val context = LocalContext.current.applicationContext
+
+    var isButtonEnabled by remember { mutableStateOf(false) }
+
+    lateinit var sharePreferences : MemberSharePreferencesManager
+    sharePreferences = MemberSharePreferencesManager(context)
+
+
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+    LaunchedEffect (lifecycleState){
+        when(lifecycleState){
+            Lifecycle.State.DESTROYED -> {}
+            Lifecycle.State.INITIALIZED -> {}
+            Lifecycle.State.CREATED -> {}
+            Lifecycle.State.STARTED -> {}
+            Lifecycle.State.RESUMED -> {
+                if (sharePreferences.loggedIn) {
+                    navController.navigate(Screen.First.route)
+                }
+
+            }
+        }
+    }
 
     Column (
         modifier = Modifier
@@ -110,6 +137,7 @@ fun LoginScreen(navController : NavHostController){
                     value = username,
                     onValueChange = {newUsername->
                         username = newUsername
+                        isButtonEnabled = username.isNotEmpty() && password.isNotEmpty()
                     },
                     label = { Text(
                         text="ชื่อผู้ใช้",
@@ -138,6 +166,7 @@ fun LoginScreen(navController : NavHostController){
                     value = password,
                     onValueChange = {newPassword->
                         password = newPassword
+                        isButtonEnabled = username.isNotEmpty() && password.isNotEmpty()
                     },
                     label = { Text(
                         text="รหัสผ่าน",
@@ -183,7 +212,7 @@ fun LoginScreen(navController : NavHostController){
 
                 FilledTonalButton(
                     onClick = {
-                        memberClient.LoginVerify(username,password)
+                        memberClient.loginVerify(username,password)
                             .enqueue(object : Callback<Member>{
                                 override fun onResponse(
                                     call: Call<Member>,
@@ -192,6 +221,18 @@ fun LoginScreen(navController : NavHostController){
                                     if (response.isSuccessful){
                                         Toast.makeText(context,"เข้าสู่ระบบสำเร็จ",Toast.LENGTH_SHORT)
                                             .show()
+                                        sharePreferences.loggedIn = true
+                                        sharePreferences.member = Member(
+                                            response.body()!!.memberId,
+                                            response.body()!!.role,
+                                            response.body()!!.room,
+                                            response.body()!!.username,
+                                            response.body()!!.name,
+                                            response.body()!!.email,
+                                            response.body()!!.phone,
+                                            response.body()!!.cardNumber
+                                        )
+
                                         navController.navigate(Screen.First.route)
                                     }else{
                                         Toast.makeText(context,"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",Toast.LENGTH_SHORT)
@@ -209,7 +250,8 @@ fun LoginScreen(navController : NavHostController){
                         containerColor = Color(94, 144, 255, 255)
                     ),
                     modifier = Modifier
-                        .padding(horizontal = 10.dp).width(171.dp)
+                        .padding(horizontal = 10.dp).width(171.dp),
+                    enabled = isButtonEnabled
                 ) {
                     Text(
                         text = "เข้าสู่ระบบ",
