@@ -51,7 +51,6 @@ fun MakeReservationScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(vertical = 80.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -175,8 +174,7 @@ fun MakeReservationScreen(navController : NavHostController){
             }
         )
 
-        Spacer(modifier = Modifier.height(70.dp))
-
+        Spacer(modifier = Modifier.height(40.dp))
     }
 
 }

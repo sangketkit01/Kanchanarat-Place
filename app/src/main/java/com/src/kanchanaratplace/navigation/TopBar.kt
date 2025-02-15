@@ -1,6 +1,7 @@
 package com.src.kanchanaratplace.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -55,6 +56,50 @@ fun SampleTopAppBar(navController : NavHostController,title : String){
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(94, 144, 255,255)
         )
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SampleActionTopAppBar(navController: NavHostController , title: String ,
+                          icon : ImageVector , onClick : ()-> Unit){
+    TopAppBar(
+        title = {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                )
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(94, 144, 255,255)
+        ),
+        actions = {
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                IconButton(
+                    onClick = onClick
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+            }
+        }
     )
 }
 

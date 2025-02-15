@@ -67,7 +67,6 @@ fun SettingScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .padding(vertical = 80.dp)
             .background(Color.Transparent),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -292,7 +291,6 @@ fun SettingScreen(navController : NavHostController){
             Text(text = "Logout", color = Color.White, fontWeight = FontWeight.Bold)
         }
 
-        Spacer(Modifier.height(50.dp))
     }
 
     if (alertDialog){

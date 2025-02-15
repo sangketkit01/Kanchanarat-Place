@@ -53,11 +53,13 @@ fun ReservationStatusScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = 200.dp,bottom = 80.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
+
+        Spacer(modifier = Modifier.height(80.dp))
+
         StepProgressIndicator(currentStep = currentStep)
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -95,8 +97,6 @@ fun ReservationStatusScreen(navController : NavHostController){
                     navController.navigate(Screen.First.route)
                 }
             )
-
-            Spacer(modifier = Modifier.height(70.dp))
         }
     }
 }

@@ -60,7 +60,7 @@ fun FirstScreen(navController : NavHostController) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier.fillMaxSize()
-            .verticalScroll(scrollState).padding(vertical = 80.dp)
+            .verticalScroll(scrollState)
             .background(
                 color = Color.White
             ),
@@ -280,6 +280,5 @@ fun FirstScreen(navController : NavHostController) {
                 }
             }
         }
-        Spacer(Modifier.height(50.dp))
     }
 }

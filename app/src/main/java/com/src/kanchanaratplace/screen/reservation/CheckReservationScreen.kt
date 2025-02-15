@@ -50,7 +50,7 @@ fun CheckReservationScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(vertical = 120.dp)
+            .padding(vertical = 40.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top

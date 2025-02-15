@@ -37,8 +37,8 @@ fun BaseScaffold(navController : NavHostController , content : @Composable () ->
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            content()
         }
 
-        content()
     }
 }

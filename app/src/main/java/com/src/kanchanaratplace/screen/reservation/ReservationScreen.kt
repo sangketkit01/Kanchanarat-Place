@@ -96,7 +96,7 @@ fun ReservationScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(vertical = 100.dp),
+            .padding(vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {

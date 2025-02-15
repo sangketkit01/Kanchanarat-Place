@@ -65,11 +65,12 @@ fun ApartmentContractScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = 120.dp, bottom = 80.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
+        Spacer(modifier = Modifier.height(20.dp))
+
         Card (
             modifier = Modifier.fillMaxWidth()
                 .padding(20.dp),
@@ -212,7 +213,8 @@ fun ApartmentContractScreen(navController : NavHostController){
                 }
             )
 
-            Spacer(modifier = Modifier.height(70.dp))
         }
+
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }

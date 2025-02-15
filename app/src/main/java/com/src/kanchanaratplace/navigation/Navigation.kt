@@ -34,8 +34,13 @@ import com.src.kanchanaratplace.screen.reservation.ReservationDetailScreen
 import com.src.kanchanaratplace.screen.reservation.ReservationScreen
 import com.src.kanchanaratplace.screen.reservation.ReservationStatusScreen
 import com.src.kanchanaratplace.screen.main.SettingScreen
+import com.src.kanchanaratplace.screen.owner.BillEditScaffold
 import com.src.kanchanaratplace.screen.owner.BillsScaffold
 import com.src.kanchanaratplace.screen.owner.BillsScreen
+import com.src.kanchanaratplace.screen.owner.ContractDetailScaffold
+import com.src.kanchanaratplace.screen.owner.ContractListScaffold
+import com.src.kanchanaratplace.screen.owner.ReservedDetailScaffold
+import com.src.kanchanaratplace.screen.owner.ReservedListScaffold
 import com.src.kanchanaratplace.screen.reservation.AvailableRoomScaffold
 import com.src.kanchanaratplace.screen.reservation.CheckReservationScaffold
 import com.src.kanchanaratplace.screen.reservation.MakeReservationScaffold
@@ -137,5 +142,24 @@ fun NavGraph(navController: NavHostController) {
             BillsScaffold(navController)
         }
 
+        composable(Screen.BillEdit.route) {
+            BillEditScaffold(navController)
+        }
+
+        composable(Screen.ReservedList.route) {
+            ReservedListScaffold(navController)
+        }
+
+        composable(Screen.ContractList.route) {
+            ContractListScaffold(navController)
+        }
+
+        composable(Screen.ReservedDetail.route) {
+            ReservedDetailScaffold(navController)
+        }
+
+        composable(Screen.ContractDetail.route) {
+            ContractDetailScaffold(navController)
+        }
     }
 }

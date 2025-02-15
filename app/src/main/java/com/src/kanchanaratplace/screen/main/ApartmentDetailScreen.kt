@@ -54,7 +54,7 @@ fun ApartmentDetailScreen(navController : NavHostController){
 
     Column (
         modifier = Modifier.fillMaxSize()
-            .verticalScroll(scrollState).padding(vertical = 80.dp)
+            .verticalScroll(scrollState)
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -430,8 +430,6 @@ fun ApartmentDetailScreen(navController : NavHostController){
                 FeatureSection("ภายในห้อง", listOf("ตู้เสื้อผ้า", "เตียงเดี่ยว", "โต๊ะอ่านหนังสือ", "ทีวี", "ตู้เย็น", "เครื่องทำน้ำอุ่น", "Wifi", "โต๊ะเครื่องแป้ง"))
             }
         }
-
-        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 

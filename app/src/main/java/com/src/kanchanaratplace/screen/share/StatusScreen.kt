@@ -93,7 +93,7 @@ fun StatusScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = 120.dp, bottom = 80.dp)
+            .padding(top = 40.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -152,8 +152,8 @@ fun StatusScreen(navController : NavHostController){
                     }
                 }
             )
-
-            Spacer(modifier = Modifier.height(70.dp))
         }
+
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }

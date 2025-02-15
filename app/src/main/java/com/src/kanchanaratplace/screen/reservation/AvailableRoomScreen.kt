@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.component.FloorSelection
 import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
@@ -61,7 +62,7 @@ fun AvailableRoomScreen(navController : NavHostController){
     )
     Column (
         modifier = Modifier.fillMaxSize()
-            .verticalScroll(scrollState).padding(vertical = 80.dp)
+            .verticalScroll(scrollState)
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -95,44 +96,8 @@ fun AvailableRoomScreen(navController : NavHostController){
             )
         }
 
-        Row (
-            modifier = Modifier.fillMaxWidth()
-                .background(
-                    color = Color(240, 240, 240, 255)
-                ),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Text("ชั้น: ", fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(start = 10.dp))
-
-            for (floor in 1..5) {
-                Button(
-                    onClick = {
-                        selectedFloor = floor
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedFloor == floor) {
-                            Color(94, 144, 255, 255)
-                        } else {
-                            Color.Transparent
-                        }
-                    ),
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                ) {
-                    Text(
-                        text = "$floor",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = if (selectedFloor == floor) {
-                            Color.White
-                        } else {
-                            Color.Black
-                        }
-                    )
-                }
-            }
-
+        FloorSelection(selectedFloor) { newFloor->
+            selectedFloor = newFloor
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -227,7 +192,6 @@ fun AvailableRoomScreen(navController : NavHostController){
             Spacer(Modifier.height(20.dp))
         }
 
-        Spacer(Modifier.height(50.dp))
     }
 }
 

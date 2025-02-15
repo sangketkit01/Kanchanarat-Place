@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
 import com.src.kanchanaratplace.navigation.BottomBar
+import com.src.kanchanaratplace.navigation.SampleActionTopAppBar
 import com.src.kanchanaratplace.navigation.SampleTopAppBar
 import com.src.kanchanaratplace.navigation.UnAuthenticationTopBar
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
@@ -30,8 +32,33 @@ fun SampleScaffold(navController : NavHostController,title : String ,content : @
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            content()
         }
+    }
+}
 
-        content()
+@Composable
+fun SampleActionScaffold(navController: NavHostController , title: String,
+                         icon : ImageVector,  onClick : ()-> Unit,
+                         content:@Composable () -> Unit){
+    Scaffold(
+        topBar = {
+            SampleActionTopAppBar(
+                navController = navController,
+                title = title,
+                onClick = onClick,
+                icon = icon
+            )
+        },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            content()
+        }
     }
 }

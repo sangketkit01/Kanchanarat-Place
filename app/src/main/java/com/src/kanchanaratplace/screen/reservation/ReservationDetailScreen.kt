@@ -53,7 +53,6 @@ fun ReservationDetailScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(vertical = 80.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -131,8 +130,7 @@ fun ReservationDetailScreen(navController : NavHostController){
                     navController.navigate(Screen.PayReservation.route)
                 }
             )
-
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }

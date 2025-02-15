@@ -42,12 +42,11 @@ fun PayReservationScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(vertical = 80.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         navController.currentBackStackEntry?.savedStateHandle?.set(
             "previous_route" , Screen.PayReservation.route
@@ -69,7 +68,6 @@ fun PayReservationScreen(navController : NavHostController){
             Screen.QrCode.route
         )
 
-        Spacer(modifier = Modifier.height(70.dp))
-
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }

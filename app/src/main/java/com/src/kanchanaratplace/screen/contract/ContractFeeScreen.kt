@@ -60,7 +60,6 @@ fun ContractFeeScreen(navController : NavHostController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(vertical = 80.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -209,8 +208,7 @@ fun ContractFeeScreen(navController : NavHostController){
                 color = Color.White
             )
         }
-
-        Spacer(modifier = Modifier.height(70.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
     }
 }

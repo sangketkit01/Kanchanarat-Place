@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
 fun ApartmentScaffold(navController: NavHostController){
@@ -41,7 +42,7 @@ fun ApartmentScreen(navController : NavHostController){
 
     Column (
         modifier = Modifier.fillMaxSize()
-            .verticalScroll(scrollState).padding(vertical = 80.dp)
+            .verticalScroll(scrollState)
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -88,7 +89,9 @@ fun ApartmentScreen(navController : NavHostController){
                     modifier = Modifier.width(158.dp).height(120.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.White)
-                        .clickable {  },
+                        .clickable {
+                            navController.navigate(Screen.Bills.route)
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(
@@ -176,11 +179,13 @@ fun ApartmentScreen(navController : NavHostController){
                     modifier = Modifier.width(158.dp).height(120.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.White)
-                        .clickable {  },
+                        .clickable {
+                            navController.navigate(Screen.ReservedList.route)
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(
-                        text = "จัดการห้องพัก",
+                        text = "ดูการจอง",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -201,6 +206,5 @@ fun ApartmentScreen(navController : NavHostController){
                 }
             }
         }
-        Spacer(Modifier.height(50.dp))
     }
 }

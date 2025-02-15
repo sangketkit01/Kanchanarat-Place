@@ -48,7 +48,7 @@ fun ProfileScreen(navHostController: NavHostController){
     val scrollState = rememberScrollState()
     Column (
         modifier = Modifier.fillMaxSize()
-            .verticalScroll(scrollState).padding(vertical = 120.dp)
+            .verticalScroll(scrollState).padding(vertical = 40.dp)
             .background(Color.Transparent),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
