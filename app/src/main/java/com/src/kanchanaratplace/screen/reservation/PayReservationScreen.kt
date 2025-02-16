@@ -21,6 +21,7 @@ import com.src.kanchanaratplace.data_util.Payment
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.component.FeeDetail
 import com.src.kanchanaratplace.component.SampleScaffold
+import com.src.kanchanaratplace.data.Reservation
 
 @Composable
 fun PayReservationScaffold(navController: NavHostController){
@@ -32,6 +33,7 @@ fun PayReservationScaffold(navController: NavHostController){
 @Composable
 fun PayReservationScreen(navController : NavHostController){
     val data = navController.previousBackStackEntry?.savedStateHandle?.get<MakeReservation>("data")
+    val reservation = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation")
     val scrollState = rememberScrollState()
 
     val paymentList = listOf<Payment>(
@@ -59,9 +61,13 @@ fun PayReservationScreen(navController : NavHostController){
             "next",Screen.Status.route
         )
 
+        navController.currentBackStackEntry?.savedStateHandle?.set(
+            "reservation",reservation
+        )
+
         FeeDetail(
             navController = navController,
-            name = data?.name,
+            name = reservation?.name,
             title = "รายละเอียดการจอง",
             paymentList = paymentList,
             Screen.ReservationDetail.route,

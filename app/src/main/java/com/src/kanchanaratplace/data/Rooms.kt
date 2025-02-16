@@ -1,7 +1,9 @@
 package com.src.kanchanaratplace.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class Rooms(
     @Expose
@@ -24,3 +26,23 @@ data class Rooms(
     @SerializedName("room floor")
     val floor : Int
 )
+
+@Parcelize
+data class DefaultRooms(
+    @Expose
+    @SerializedName("room_id") val roomId : Int,
+
+    @Expose
+    @SerializedName("room_code") val roomCode : String,
+
+    @Expose
+    @SerializedName("status_id") val statusId : Int,
+
+    @Expose
+    @SerializedName("room_price") val roomPrice : Int,
+
+    @Expose
+    @SerializedName("room_floor") val roomFloor : Int
+) : Parcelable
+
+

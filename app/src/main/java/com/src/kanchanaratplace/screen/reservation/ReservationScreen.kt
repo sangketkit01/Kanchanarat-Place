@@ -193,6 +193,7 @@ fun ReservationScreen(navController: NavHostController) {
                         else -> Color.Gray
                     }
                     RoomStatusItem(
+                        roomId = room.roomId,
                         room = RoomStatus(
                             number = room.code,
                             status = room.status,
@@ -210,7 +211,7 @@ fun ReservationScreen(navController: NavHostController) {
 
 
 @Composable
-fun RoomStatusItem(room: RoomStatus, selectedRoom : String, onSelected:(String)->Unit,
+fun RoomStatusItem(roomId : Int,room: RoomStatus, selectedRoom : String, onSelected:(String)->Unit,
                    navController: NavHostController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -233,6 +234,9 @@ fun RoomStatusItem(room: RoomStatus, selectedRoom : String, onSelected:(String)-
                 onSelected(room.number)
                 navController.currentBackStackEntry?.savedStateHandle?.set(
                     "room",room.number
+                )
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    "room_id",roomId
                 )
 
                 navController.navigate(Screen.MakeReservation.route)

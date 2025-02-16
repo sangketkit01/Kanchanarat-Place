@@ -31,6 +31,7 @@ import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.component.BlueWhiteButton
 import com.src.kanchanaratplace.component.MytextField
 import com.src.kanchanaratplace.component.WhiteBlueButton
+import com.src.kanchanaratplace.data.Reservation
 import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
@@ -44,10 +45,14 @@ fun ReservationDetailScaffold(navController: NavHostController){
 fun ReservationDetailScreen(navController : NavHostController){
     val scrollState = rememberScrollState()
 
+    val room = navController.previousBackStackEntry?.savedStateHandle?.get<String>("room")
+    val roomId = navController.previousBackStackEntry?.savedStateHandle?.get<Int>("room_id")
+
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var line by remember { mutableStateOf("") }
 
     Column (
         modifier = Modifier
@@ -104,6 +109,12 @@ fun ReservationDetailScreen(navController : NavHostController){
                     onValueChange = {email = it},
                     labelText = "อีเมลล์"
                 )
+
+                MytextField(
+                    value = line,
+                    onValueChange = {line = it},
+                    labelText = "ไอดีไลน์"
+                )
             }
         }
 
@@ -127,6 +138,14 @@ fun ReservationDetailScreen(navController : NavHostController){
             BlueWhiteButton(
                 text = "ยืนยันการจองห้องพัก",
                 onClick = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "reservation", roomId?.let {
+                            Reservation(
+                                0,4, it,name,phone,email,line,null
+                            )
+                        }
+                    )
+
                     navController.navigate(Screen.PayReservation.route)
                 }
             )

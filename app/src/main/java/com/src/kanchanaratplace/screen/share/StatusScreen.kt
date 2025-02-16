@@ -27,6 +27,7 @@ import com.src.kanchanaratplace.component.BlueWhiteButton
 import com.src.kanchanaratplace.component.CardStatus
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.component.WhiteBlueButton
+import com.src.kanchanaratplace.data.Reservation
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.screen.reservation.PayReservationScreen
 
@@ -45,6 +46,8 @@ fun StatusScreen(navController : NavHostController){
     var before: String? = null
     var next : String? = null
 
+    var reservationId : Int? = null
+
     var title : String? = null
     var content : String? = null
     var beforeTextButton : String? = null
@@ -56,7 +59,8 @@ fun StatusScreen(navController : NavHostController){
         Screen.PayReservation.route -> {
             before = Screen.ReservationStatus.route
             next = Screen.First.route
-            title = "ชำระเงินเรียบร้อย"
+            reservationId = navController.previousBackStackEntry?.savedStateHandle?.get<Int>("reservation_id")
+            title = "ชำระเงินเรียบร้อย $reservationId"
             content = "เราได้นำเนินการแจ้งหอพักเรียบร้อย\n" +
                     "รอดำเนินการในขั้นต่อไป"
             beforeTextButton = "ตรวจสอบการดำเนินการ"
@@ -78,7 +82,9 @@ fun StatusScreen(navController : NavHostController){
         Screen.CheckReservation.route-> {
             before = Screen.CheckReservation.route
             next = Screen.ReservationStatus.route
-            title = "ดำเนินการเสร็จสิ้น"
+            reservationId = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation_data")
+                ?.reservationId
+            title = "ดำเนินการเสร็จสิ้น $reservationId"
             content = "พบข้อมูลการจองของท่าน\n" +
                     "กดปุ่มไปที่หน้าขั้นตอนการดำเนินการ\n" +
                     "เพื่อตรวจสอบสถานะการดำเนินการของท่าน"
@@ -148,6 +154,9 @@ fun StatusScreen(navController : NavHostController){
                 text = nextTextButton ?: "",
                 onClick = {
                     if (next != null) {
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "reservation_id" , reservationId
+                        )
                         navController.navigate(next)
                     }
                 }

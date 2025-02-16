@@ -45,6 +45,7 @@ fun MakeReservationScaffold(navController: NavHostController){
 @Composable
 fun MakeReservationScreen(navController : NavHostController){
     val room = navController.previousBackStackEntry?.savedStateHandle?.get<String>("room")
+    val roomId = navController.previousBackStackEntry?.savedStateHandle?.get<Int>("room_id")
     val scrollState = rememberScrollState()
 
     Column (
@@ -170,6 +171,12 @@ fun MakeReservationScreen(navController : NavHostController){
         BlueWhiteButton(
             text = "จองห้องพัก",
             onClick = {
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    "room" , room
+                )
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    "room_id",roomId
+                )
                 navController.navigate(Screen.ReservationDetail.route)
             }
         )

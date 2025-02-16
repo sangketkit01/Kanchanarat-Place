@@ -1,5 +1,7 @@
 package com.src.kanchanaratplace.screen.reservation
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,13 +26,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.api.RoomAPI
 import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.component.MytextField
+import com.src.kanchanaratplace.data.Reservation
 import com.src.kanchanaratplace.navigation.Screen
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
 fun CheckReservationScaffold(navController: NavHostController){
@@ -44,8 +52,11 @@ fun CheckReservationScreen(navController : NavHostController){
     val scrollState = rememberScrollState()
 
     var name by remember { mutableStateOf("") }
-    var surname by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
 
+    val context = LocalContext.current
+
+    val roomClient = RoomAPI.create()
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -89,9 +100,9 @@ fun CheckReservationScreen(navController : NavHostController){
                 )
 
                 MytextField(
-                    value = surname,
-                    onValueChange = {surname = it},
-                    labelText = "นามสกุล"
+                    value = phone,
+                    onValueChange = {phone = it},
+                    labelText = "เบอร์โทรศัพท์"
                 )
 
                 Button(
@@ -107,7 +118,39 @@ fun CheckReservationScreen(navController : NavHostController){
                             "next", Screen.First.route
                         )
 
-                        navController.navigate(Screen.Status.route)
+                        roomClient.checkReservation(
+                            name,phone
+                        ).enqueue(
+                            object : Callback<Reservation>{
+                                override fun onResponse(
+                                    call: Call<Reservation>,
+                                    response: Response<Reservation>
+                                ) {
+                                    if(response.isSuccessful){
+                                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                                            "reservation_data",Reservation(
+                                                response.body()!!.reservationId,
+                                                response.body()!!.statusId,
+                                                response.body()!!.roomId,
+                                                response.body()!!.name,
+                                                response.body()!!.phone,
+                                                response.body()!!.email,
+                                                response.body()!!.line,
+                                                response.body()!!.slipPath
+                                            )
+                                        )
+                                    }
+
+                                    navController.navigate(Screen.Status.route)
+                                }
+
+                                override fun onFailure(call: Call<Reservation>, t: Throwable) {
+                                    t.message?.let { Log.e("Error", it) }
+                                }
+                            }
+                        )
+
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
