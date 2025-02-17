@@ -1,5 +1,6 @@
 package com.src.kanchanaratplace.screen.reservation
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.api.RoomAPI
+import com.src.kanchanaratplace.api_util.getReservationUtility
 import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.component.BlueWhiteButton
 import com.src.kanchanaratplace.component.SampleScaffold
@@ -58,11 +61,11 @@ fun ReservationStatusScaffold(navController: NavHostController){
 fun ReservationStatusScreen(navController : NavHostController){
     val scrollState = rememberScrollState()
     val reservationId = navController.previousBackStackEntry?.savedStateHandle?.get<Int>("reservation_id")
-
     var currentStep by remember { mutableIntStateOf(1) }
 
     val context = LocalContext.current
 
+    var reservedData by remember { mutableStateOf<Reservation?>(null) }
     val roomClient = RoomAPI.create()
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
@@ -74,28 +77,25 @@ fun ReservationStatusScreen(navController : NavHostController){
             Lifecycle.State.STARTED -> {}
             Lifecycle.State.RESUMED -> {
                 if (reservationId != null) {
-                    roomClient.getReservation(reservationId)
-                        .enqueue(object : Callback<Reservation>{
-                            override fun onResponse(
-                                call: Call<Reservation>,
-                                response: Response<Reservation>
-                            ) {
-                                if(response.isSuccessful){
-                                    val statusId : Int = response.body()!!.statusId
-                                    currentStep = when(statusId){
-                                        OtherStatus.PENDING.code -> {2}
-                                        OtherStatus.APPROVED.code -> {3}
-                                        else -> {1}
-                                    }
-                                }else{
-                                    Toast.makeText(context,response.message(),Toast.LENGTH_SHORT).show()
-                                }
+                    getReservationUtility(
+                        reservationId,
+                        onResponse = { response->
+                            val statusId : Int = response.statusId
+                            currentStep = when(statusId){
+                                OtherStatus.PENDING.code -> {2}
+                                OtherStatus.APPROVED.code -> {3}
+                                else -> {1}
                             }
-
-                            override fun onFailure(call: Call<Reservation>, t: Throwable) {
-                                Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
-                            }
-                        })
+                            reservedData = response
+                        },
+                        onElse = {els->
+                            Toast.makeText(context,els.message(),Toast.LENGTH_SHORT).show()
+                        },
+                        onFailure = {t->
+                            Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
+                            t.message?.let { Log.e("Error",it) }
+                        }
+                    )
                 }
             }
         }
@@ -138,6 +138,9 @@ fun ReservationStatusScreen(navController : NavHostController){
                 WhiteBlueButton(
                     text = "ดำเนินการทำสัญญา",
                     onClick = {
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "reservation_data",reservedData
+                        )
                         navController.navigate(Screen.ContractFee.route)
                     }
                 )

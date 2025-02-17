@@ -64,7 +64,7 @@ fun FeeDetail(navController : NavHostController ,name : String? ,
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = "คุณ$name",
+                    text = "คุณ $name",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
                 )

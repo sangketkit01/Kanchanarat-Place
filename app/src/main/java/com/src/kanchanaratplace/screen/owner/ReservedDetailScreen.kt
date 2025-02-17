@@ -50,6 +50,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.api.RoomAPI
+import com.src.kanchanaratplace.api_util.approveReservationUtility
+import com.src.kanchanaratplace.api_util.getReservationUtility
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.component.SlipImageDialog
 import com.src.kanchanaratplace.component.SmallBlueWhiteButton
@@ -73,8 +75,6 @@ fun ReservedDetailScreen(navController : NavHostController){
     val reservationId = navController.previousBackStackEntry?.savedStateHandle?.get<Int>("reservation_id")
     val roomDetail = navController.previousBackStackEntry?.savedStateHandle?.get<DefaultRooms>("room_detail")
 
-    val roomClient = RoomAPI.create()
-
     val context = LocalContext.current
 
     var showSlipAlert by remember { mutableStateOf(false) }
@@ -91,20 +91,19 @@ fun ReservedDetailScreen(navController : NavHostController){
             Lifecycle.State.STARTED -> {}
             Lifecycle.State.RESUMED -> {
                 if (reservationId != null) {
-                    roomClient.getReservation(reservationId)
-                        .enqueue(object : Callback<Reservation>{
-                            override fun onResponse(
-                                call: Call<Reservation>,
-                                response: Response<Reservation>
-                            ) {
-                                reservedData = response.body()
-                            }
+                    getReservationUtility(
+                        reservationId,
+                        onResponse = {response->
+                            reservedData = response
+                        },
+                        onElse = {
 
-                            override fun onFailure(call: Call<Reservation>, t: Throwable) {
-                                Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
-                                t.message?.let { Log.e("Error",it) }
-                            }
-                        })
+                        },
+                        onFailure = {t->
+                            Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
+                            t.message?.let { Log.e("Error",it) }
+                        }
+                    )
                 }
             }
         }
@@ -392,25 +391,20 @@ fun ReservedDetailScreen(navController : NavHostController){
                 TextButton(
                     onClick = {
                         reservedData?.reservationId?.let {
-                            roomClient.approveReservation(it)
-                                .enqueue(object : Callback<Reservation>{
-                                    override fun onResponse(
-                                        call: Call<Reservation>,
-                                        response: Response<Reservation>
-                                    ) {
-                                        if(response.isSuccessful){
-                                            Toast.makeText(context,"อนุมัติการจองเสร็จสิ้น",Toast.LENGTH_SHORT).show()
-                                            navController.popBackStack()
-                                        }else{
-                                            Toast.makeText(context,"อนุมัติการจองล้มเหลว",Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
-
-                                    override fun onFailure(call: Call<Reservation>, t: Throwable) {
-                                        Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
-                                        t.message?.let { Log.e("Error",it) }
-                                    }
-                                })
+                            approveReservationUtility(
+                                it,
+                                onResponse = {
+                                    Toast.makeText(context,"อนุมัติการจองเสร็จสิ้น",Toast.LENGTH_SHORT).show()
+                                    navController.popBackStack()
+                                },
+                                onElse = {
+                                    Toast.makeText(context,"อนุมัติการจองล้มเหลว",Toast.LENGTH_SHORT).show()
+                                },
+                                onFailure = {t->
+                                    Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
+                                    t.message?.let { Log.e("Error", t.message!!) }
+                                }
+                            )
                         }
                     }
                 ) {

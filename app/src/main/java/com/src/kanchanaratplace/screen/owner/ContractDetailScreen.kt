@@ -27,6 +27,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +42,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.component.SampleScaffold
+import com.src.kanchanaratplace.component.SlipImageDialog
 import com.src.kanchanaratplace.component.SmallWhiteBlueButton
+import com.src.kanchanaratplace.data.Contract
+import com.src.kanchanaratplace.data.DefaultRooms
+import com.src.kanchanaratplace.data.Reservation
+
 @Composable
 fun ContractDetailScaffold(navController: NavHostController){
     SampleScaffold(navController,"ยืนยันการทำสัญญา") {
@@ -49,6 +58,13 @@ fun ContractDetailScaffold(navController: NavHostController){
 
 @Composable
 fun ContractDetailScreen(navController : NavHostController){
+    val contractData = navController.previousBackStackEntry?.savedStateHandle?.get<Contract>("contract_data")
+    val roomData = navController.previousBackStackEntry?.savedStateHandle?.get<DefaultRooms>("room_data")
+    val reservationData = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation_data")
+
+    var contractSlipAlert by remember { mutableStateOf(false) }
+    var feeSlipAlert by remember { mutableStateOf(false) }
+
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -89,12 +105,12 @@ fun ContractDetailScreen(navController : NavHostController){
                 Spacer(modifier = Modifier.height(5.dp))
 
                 Text(
-                    text = "ชั้น 1",
+                    text = "ชั้น ${roomData?.roomFloor}",
                     fontSize = 16.sp
                 )
 
                 Text(
-                    text = "ห้อง 102",
+                    text = "ห้อง ${roomData?.roomCode}",
                     fontSize = 16.sp
                 )
             }
@@ -136,7 +152,7 @@ fun ContractDetailScreen(navController : NavHostController){
                         horizontalAlignment = Alignment.Start
                     ){
                         Text(
-                            text = "คุณใจดี ดีใจจัง",
+                            text = "คุณ ${reservationData?.name}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -145,7 +161,7 @@ fun ContractDetailScreen(navController : NavHostController){
                             verticalAlignment = Alignment.CenterVertically
                         ){
                             Text(
-                                text = "เบอร์โทรศัพท์ 098-145-4675",
+                                text = "เบอร์โทรศัพท์ ${reservationData?.phone}",
                                 fontSize = 13.sp
                             )
 
@@ -245,7 +261,7 @@ fun ContractDetailScreen(navController : NavHostController){
                     SmallWhiteBlueButton(
                         text = "ดูสลิป",
                         onClick = {
-
+                            feeSlipAlert = true
                         }
                     )
                 }
@@ -417,7 +433,7 @@ fun ContractDetailScreen(navController : NavHostController){
                     SmallWhiteBlueButton(
                         text = "ดูสลิป",
                         onClick = {
-
+                            contractSlipAlert = true
                         }
                     )
                 }
@@ -481,6 +497,18 @@ fun ContractDetailScreen(navController : NavHostController){
                     color = Color.White
                 )
             }
+        }
+    }
+
+    if(feeSlipAlert){
+        SlipImageDialog(reservationData?.slipPath) {
+            feeSlipAlert = false
+        }
+    }
+
+    if(contractSlipAlert){
+        SlipImageDialog(contractData?.slipPath) {
+            contractSlipAlert = false
         }
     }
 }

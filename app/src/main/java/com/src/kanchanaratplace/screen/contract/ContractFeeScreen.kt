@@ -37,6 +37,7 @@ import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.component.SampleScaffold
+import com.src.kanchanaratplace.data.Reservation
 import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
 import com.src.kanchanaratplace.navigation.BottomBar
 import com.src.kanchanaratplace.navigation.Screen
@@ -54,6 +55,7 @@ fun ContractFeeScaffold(navController : NavHostController){
 
 @Composable
 fun ContractFeeScreen(navController : NavHostController){
+    val reservedData = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation_data")
     val scrollState = rememberScrollState()
 
     Column (
@@ -194,6 +196,9 @@ fun ContractFeeScreen(navController : NavHostController){
 
         FilledTonalButton(
             onClick = {
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    "reservation_data",reservedData
+                )
                 navController.navigate(Screen.ContractFeeDetail.route)
             },
             colors = ButtonDefaults.filledTonalButtonColors(

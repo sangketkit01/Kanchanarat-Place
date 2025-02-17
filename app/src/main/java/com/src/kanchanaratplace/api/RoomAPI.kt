@@ -1,10 +1,12 @@
 package com.src.kanchanaratplace.api
 
+import com.src.kanchanaratplace.data.Contract
 import com.src.kanchanaratplace.data.DefaultRooms
 import com.src.kanchanaratplace.data.Reservation
 import com.src.kanchanaratplace.data.Rooms
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -38,7 +40,7 @@ interface RoomAPI {
         @Part("email") email: RequestBody,
         @Part("line") line: RequestBody,
         @Part slipPath: MultipartBody.Part
-    ): Call<Reservation>
+    ): Call<ResponseBody>
 
     @FormUrlEncoded
     @POST("check-reservation")
@@ -58,7 +60,21 @@ interface RoomAPI {
     @POST("approve-reservation/{reservation_id}")
     fun approveReservation(
         @Path("reservation_id") reservationId : Int
-    ) : Call<Reservation>
+    ) : Call<ResponseBody>
+
+    @Multipart
+    @POST("insert-contract")
+    fun insertContract(
+        @Part("room_id") roomId: RequestBody,
+        @Part("reservation_id") reservationId: RequestBody,
+        @Part("contract_detail") contractDetail: RequestBody,
+        @Part("contract_length_month") contractLength: RequestBody,
+        @Part slipPath: MultipartBody.Part,
+        @Part("expire_at") expireAt: RequestBody
+    ) : Call<ResponseBody>
+
+    @GET("get-new-contracts")
+    fun getNewContracts() : Call<List<Contract>>
 
     companion object{
         fun create() : RoomAPI{

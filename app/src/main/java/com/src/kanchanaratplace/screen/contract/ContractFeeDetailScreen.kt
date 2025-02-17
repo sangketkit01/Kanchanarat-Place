@@ -23,6 +23,7 @@ import com.src.kanchanaratplace.data_util.Payment
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.component.FeeDetail
 import com.src.kanchanaratplace.component.SampleScaffold
+import com.src.kanchanaratplace.data.Reservation
 import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
 import com.src.kanchanaratplace.navigation.BottomBar
 import com.src.kanchanaratplace.navigation.UnAuthenticationTopBar
@@ -40,6 +41,8 @@ fun ContractFeeDetailScaffold(navController : NavHostController){
 
 @Composable
 fun ContractFeeDetailScreen(navController : NavHostController){
+    val reservedData = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation_data")
+
     val scrollState = rememberScrollState()
     val paymentList = listOf<Payment>(
         Payment(null,null,"ราคาห้อง",4000,null),
@@ -58,6 +61,10 @@ fun ContractFeeDetailScreen(navController : NavHostController){
         Spacer(modifier = Modifier.height(40.dp))
 
         navController.currentBackStackEntry?.savedStateHandle?.set(
+            "reservation_data",reservedData
+        )
+
+        navController.currentBackStackEntry?.savedStateHandle?.set(
             "previous_route" , Screen.ContractFeeDetail.route
         )
 
@@ -70,7 +77,7 @@ fun ContractFeeDetailScreen(navController : NavHostController){
 
         FeeDetail(
             navController = navController,
-            name = "ใจดี ดีใจจัง",
+            name = "${reservedData?.name}",
             title = "รายละเอียดสัญญา",
             paymentList = paymentList,
             Screen.ContractFee.route,

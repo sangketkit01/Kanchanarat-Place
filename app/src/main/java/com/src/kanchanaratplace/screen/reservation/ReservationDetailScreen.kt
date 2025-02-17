@@ -141,7 +141,7 @@ fun ReservationDetailScreen(navController : NavHostController){
                     navController.currentBackStackEntry?.savedStateHandle?.set(
                         "reservation", roomId?.let {
                             Reservation(
-                                0,4, it,name,phone,email,line,null
+                                0,4, it,"$name $surname",phone,email,line,null
                             )
                         }
                     )

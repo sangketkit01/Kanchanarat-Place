@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.component.SmallWhiteBlueButton
 import com.src.kanchanaratplace.api.RoomAPI
+import com.src.kanchanaratplace.api_util.getRoomUtility
 import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.data.Rooms
 import com.src.kanchanaratplace.navigation.Screen
@@ -60,13 +61,11 @@ fun ReservationScaffold(navController: NavHostController){
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservationScreen(navController: NavHostController) {
     var selectedFloor by remember { mutableIntStateOf(1) }
     var selectedRoom by remember { mutableStateOf("") }
 
-    val roomClient = RoomAPI.create()
     val roomList = remember { mutableStateListOf<Rooms>() }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -74,22 +73,21 @@ fun ReservationScreen(navController: NavHostController) {
     LaunchedEffect(selectedFloor) {
         loading = true
         error = null
-        roomClient.getRoom(selectedFloor).enqueue(object : Callback<List<Rooms>> {
-            override fun onResponse(call: Call<List<Rooms>>, response: Response<List<Rooms>>) {
-                if (response.isSuccessful) {
-                    roomList.clear()
-                    roomList.addAll(response.body() ?: emptyList())
-                } else {
-                    error = "เกิดข้อผิดพลาดในการโหลดข้อมูล (${response.code()})"
-                }
+        getRoomUtility(
+            floor = selectedFloor,
+            onResponse = { response ->
+                roomList.clear()
+                roomList.addAll(response ?: emptyList())
                 loading = false
-            }
-
-            override fun onFailure(call: Call<List<Rooms>>, t: Throwable) {
+            },
+            onElse = { err->
+                error = "เกิดข้อผิดพลาดในการโหลดข้อมูล (${err.code()})"
+            },
+            onFailure = { t->
                 error = "ไม่สามารถเชื่อมต่อ API ได้: ${t.message}"
                 loading = false
             }
-        })
+        )
     }
 
     Column(

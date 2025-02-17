@@ -2,10 +2,12 @@ package com.src.kanchanaratplace.screen.share
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +30,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,22 +46,31 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.api.RoomAPI
-import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.api_util.checkReservationUtility
+import com.src.kanchanaratplace.api_util.getReservationUtility
+import com.src.kanchanaratplace.api_util.insertContractUtility
+import com.src.kanchanaratplace.api_util.reservingRoomUtility
 import com.src.kanchanaratplace.component.BlueWhiteButton
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.component.WhiteBlueButton
+import com.src.kanchanaratplace.data.Contract
 import com.src.kanchanaratplace.data.Reservation
 import com.src.kanchanaratplace.navigation.Screen
-import com.src.kanchanaratplace.screen.reservation.PayReservationScreen
+import com.src.kanchanaratplace.status.ContractEnum
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import okhttp3.internal.wait
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun QrCodeScaffold(navController: NavHostController){
     SampleScaffold(navController,"ชำระค่าบริการ") {
@@ -66,13 +78,13 @@ fun QrCodeScaffold(navController: NavHostController){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun QRCodeScreen(navController : NavHostController){
     val before = navController.previousBackStackEntry?.savedStateHandle?.get<String>("before")
     val next = navController.previousBackStackEntry?.savedStateHandle?.get<String>("next")
     val previousRoute = navController.previousBackStackEntry?.savedStateHandle?.get<String>("previous_route")
     val reservation = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation")
-    val room = navController.previousBackStackEntry?.savedStateHandle?.get<String>("room")
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -99,7 +111,6 @@ fun QRCodeScreen(navController : NavHostController){
         )
     }
 
-    val roomClient = RoomAPI.create()
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -216,6 +227,11 @@ fun QRCodeScreen(navController : NavHostController){
             }
         }
 
+        if(selectedImageUri != null){
+            Text("เลือกรูปภาพแล้ว : ${context.getImagePart(selectedImageUri!!).toString()}",
+                modifier = Modifier.padding(horizontal = 25.dp))
+        }
+
         Column (
             modifier = Modifier.fillMaxWidth()
                 .padding(20.dp),
@@ -240,46 +256,76 @@ fun QRCodeScreen(navController : NavHostController){
                     if (next != null && previousRoute == Screen.PayReservation.route) {
                         selectedImageUri?.let { uri ->
                             val imagePart = context.getImagePart(uri)
-                            val statusIdBody = reservation?.statusId.toString()
-                                .toRequestBody("text/plain".toMediaTypeOrNull())
-                            val nameBody =
-                                (reservation?.name ?: "").toRequestBody("text/plain".toMediaTypeOrNull())
-                            val phoneBody =
-                                (reservation?.phone ?: "").toRequestBody("text/plain".toMediaTypeOrNull())
-                            val emailBody =
-                                (reservation?.email ?: "").toRequestBody("text/plain".toMediaTypeOrNull())
-                            val lineBody =
-                                (reservation?.line ?: "").toRequestBody("text/plain".toMediaTypeOrNull())
-
-                            roomClient.reservingRoom(
+                            reservingRoomUtility(
                                 reservation?.roomId ?: 0,
-                                statusIdBody,
-                                nameBody,
-                                phoneBody,
-                                emailBody,
-                                lineBody,
-                                imagePart
-                            ).enqueue(object : Callback<Reservation> {
-                                override fun onResponse(call: Call<Reservation>, response: Response<Reservation>) {
-                                    if (response.isSuccessful) {
-                                        val reservationId = response.body()?.reservationId ?: 0
+                                reservation?.statusId ?: 0,
+                                reservation?.name ?: "",
+                                reservation?.phone ?: "",
+                                reservation?.email ?: "",
+                                reservation?.line ?: "",
+                                imagePart,
+                                onResponse = {
+                                    checkReservationUtility(
+                                        reservation?.name ?: "",
+                                        reservation?.phone ?: "",
+                                        onResponse = { response ->
+                                            val reservationId = response.reservationId ?: 0
+                                            Toast.makeText(context, "Reserve Successfully", Toast.LENGTH_SHORT).show()
 
-                                        Toast.makeText(context,"Reserve Successfully $reservationId",Toast.LENGTH_SHORT).show()
-                                        navController.currentBackStackEntry?.savedStateHandle?.set(
-                                            "reservation_id" , reservationId
-                                        )
-                                        navController.navigate(next)
-                                    }else{
-                                        Toast.makeText(context,"Reserve Failed + ${reservation?.roomId}",Toast.LENGTH_SHORT).show()
-                                    }
+                                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                "reservation_id", reservationId
+                                            )
+                                            navController.navigate(next)
+                                        },
+                                        onElse = {
+                                            Toast.makeText(context, "Reservation not found", Toast.LENGTH_SHORT).show()
+                                        },
+                                        onFailure = { t ->
+                                            Toast.makeText(context, "Error Check LogCat", Toast.LENGTH_SHORT).show()
+                                            t.message?.let { Log.e("Error", it) }
+                                        }
+                                    )
+                                },
+                                onElse = { els ->
+                                    Toast.makeText(context, "Reserve Failed + ${reservation?.roomId}", Toast.LENGTH_SHORT).show()
+                                },
+                                onFailure = { t ->
+                                    Toast.makeText(context, "Error Check LogCat", Toast.LENGTH_SHORT).show()
+                                    t.message?.let { Log.e("Error", it) }
                                 }
-
-                                override fun onFailure(call: Call<Reservation>, t: Throwable) {
-                                    Toast.makeText(context,"Error onFailure + ${t.message}",Toast.LENGTH_SHORT).show()
-                                }
-                            })
+                            )
                         }
                     }
+
+
+                    if(next != null && previousRoute == Screen.ContractFeeDetail.route){
+                        val reservedData = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation_data")
+                        selectedImageUri?.let { uri ->
+                            val imagePart = context.getImagePart(uri)
+                            insertContractUtility(
+                                reservedData?.roomId ?: 0,
+                                reservedData?.reservationId ?: 0,
+                                "Hello World",
+                                ContractEnum.StartContract.length,
+                                imagePart,
+                                onResponse = {
+                                    Toast.makeText(context,"ทำสัญญาสำเร็จ รอการอนุมัติ",Toast.LENGTH_SHORT).show()
+                                    navController.navigate(next)
+                                },
+                                onElse = {els->
+                                    val errorBody = els.errorBody()?.string() ?: "Unknown error"
+                                    Log.e("API Error", "Response Code: ${els.code()}, Message: $errorBody")
+
+                                    Toast.makeText(context, "เกิดข้อผิดพลาด: $errorBody", Toast.LENGTH_LONG).show()
+                                },
+                                onFailure = {t->
+                                    Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
+                                    t.message?.let { Log.e("Error",it) }
+                                }
+                            )
+                        }
+                    }
+
                 }
             )
         }
@@ -288,5 +334,4 @@ fun QRCodeScreen(navController : NavHostController){
     }
 
 }
-
 

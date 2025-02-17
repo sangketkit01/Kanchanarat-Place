@@ -50,6 +50,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.api.RoomAPI
+import com.src.kanchanaratplace.api_util.getAllReservedUtility
+import com.src.kanchanaratplace.api_util.getOneRoomUtility
 import com.src.kanchanaratplace.component.ButtonWithBadge
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.data.DefaultRooms
@@ -73,8 +75,6 @@ fun ReservedListScreen(navController : NavHostController){
 
     val context = LocalContext.current
 
-    val roomClient = RoomAPI.create()
-
     val reservedList = remember { mutableStateListOf<Reservation>() }
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
@@ -85,28 +85,18 @@ fun ReservedListScreen(navController : NavHostController){
             Lifecycle.State.CREATED -> {}
             Lifecycle.State.STARTED -> {}
             Lifecycle.State.RESUMED -> {
-                roomClient.getAllReserved()
-                    .enqueue(object : Callback<List<Reservation>>{
-                        override fun onResponse(
-                            call: Call<List<Reservation>>,
-                            response: Response<List<Reservation>>
-                        ) {
-                            if(response.isSuccessful){
-                                response.body()?.forEach{data->
-                                    reservedList.add(
-                                        data
-                                    )
-                                }
-                            }else{
-                                Toast.makeText(context,"Data not found",Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                        override fun onFailure(call: Call<List<Reservation>>, t: Throwable) {
-                            Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
-                            t.message?.let { Log.e("Error",it) }
-                        }
-                    })
+                getAllReservedUtility(
+                    onResponse = {response->
+                        reservedList.addAll(response)
+                    },
+                    onElse = {
+                        Toast.makeText(context,"Data not found",Toast.LENGTH_SHORT).show()
+                    },
+                    onFailure = {t->
+                        Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
+                        t.message?.let { Log.e("Error",it) }
+                    }
+                )
             }
         }
     }
@@ -147,26 +137,19 @@ fun ReservedListScreen(navController : NavHostController){
 
         reservedList.forEach { data->
             var room by remember { mutableStateOf<DefaultRooms?>(null) }
-            roomClient.getOneRoom(
-                data.roomId
-            ).enqueue(object : Callback<DefaultRooms>{
-                override fun onResponse(
-                    call: Call<DefaultRooms>,
-                    response: Response<DefaultRooms>
-                ) {
-                    if(response.isSuccessful){
-                        room = response.body()
-                        Log.e("Data", room.toString())
-                    }else{
-                        Toast.makeText(context,"Data not found",Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<DefaultRooms>, t: Throwable) {
+            getOneRoomUtility(
+                data.roomId,
+                onResponse = {response->
+                    room = response
+                },
+                onElse = {
+                    Toast.makeText(context,"Data not found",Toast.LENGTH_SHORT).show()
+                },
+                onFailure = {t->
                     Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
                     t.message?.let { Log.e("Error",it) }
                 }
-            })
+            )
 
             Card (
                 modifier = Modifier.fillMaxWidth()
@@ -204,7 +187,7 @@ fun ReservedListScreen(navController : NavHostController){
                         Spacer(modifier = Modifier.height(5.dp))
 
                         Text(
-                            text = "คุณ ${data.name}",
+                            text = "คุณ ${data.name.split(" ")[0]}",
                             fontSize = 16.sp
                         )
 
