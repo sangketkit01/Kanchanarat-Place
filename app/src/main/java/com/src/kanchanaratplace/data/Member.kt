@@ -2,19 +2,24 @@ package com.src.kanchanaratplace.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.sql.Timestamp
+import java.util.Date
 
 data class Member(
     @Expose
     @SerializedName("member_id") val memberId : Int,
 
     @Expose
-    @SerializedName("role_name") val role : String,
+    @SerializedName("room_id") val roomId : Int,
 
     @Expose
-    @SerializedName("room_code") val room : String,
+    @SerializedName("role_id") val roleId : Int,
 
     @Expose
     @SerializedName("username") val username : String,
+
+    @Expose
+    @SerializedName("password") val password : String,
 
     @Expose
     @SerializedName("name") val name : String,
@@ -26,6 +31,21 @@ data class Member(
     @SerializedName("phone") val phone : String,
 
     @Expose
-    @SerializedName("card_number") val cardNumber : String
+    @SerializedName("line") val line : String,
+
+    @Expose
+    @SerializedName("card_number") val cardNumber : String,
+
+    @Expose
+    @SerializedName("image_path") val imagePath : String,
+
+    @Expose
+    @SerializedName("birth_date") val birthDate : Date,
+
+    @Expose
+    @SerializedName("created_at") val createdAt : Timestamp,
+
+    @Expose
+    @SerializedName("updated_at") val updatedAt : Timestamp
 )
 

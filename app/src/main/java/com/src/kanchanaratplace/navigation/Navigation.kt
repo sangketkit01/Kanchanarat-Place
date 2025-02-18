@@ -1,42 +1,28 @@
 package com.src.kanchanaratplace.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.src.kanchanaratplace.screen.contract.ContractFeeDetailScaffold
-import com.src.kanchanaratplace.screen.main.ApartmentContractScreen
-import com.src.kanchanaratplace.screen.reservation.AvailableRoomScreen
-import com.src.kanchanaratplace.screen.main.FirstScreen
-import com.src.kanchanaratplace.screen.main.ApartmentDetailScreen
-import com.src.kanchanaratplace.screen.main.ApartmentScreen
-import com.src.kanchanaratplace.screen.main.ChatScreen
-import com.src.kanchanaratplace.screen.reservation.CheckReservationScreen
-import com.src.kanchanaratplace.screen.contract.ContractFeeDetailScreen
 import com.src.kanchanaratplace.screen.contract.ContractFeeScaffold
-import com.src.kanchanaratplace.screen.contract.ContractFeeScreen
 import com.src.kanchanaratplace.screen.main.ApartmentContractScaffold
 import com.src.kanchanaratplace.screen.main.ApartmentDetailScaffold
-import com.src.kanchanaratplace.screen.main.ApartmentScaffold
+import com.src.kanchanaratplace.screen.owner.ApartmentScaffold
 import com.src.kanchanaratplace.screen.main.ChatScaffold
 import com.src.kanchanaratplace.screen.main.FirstScaffold
 import com.src.kanchanaratplace.screen.main.LoginScaffold
-import com.src.kanchanaratplace.screen.main.LoginScreen
 import com.src.kanchanaratplace.screen.main.NotificationScaffold
-import com.src.kanchanaratplace.screen.reservation.MakeReservationScreen
-import com.src.kanchanaratplace.screen.main.NotificationScreen
 import com.src.kanchanaratplace.screen.main.ProfileScaffold
-import com.src.kanchanaratplace.screen.reservation.PayReservationScreen
-import com.src.kanchanaratplace.screen.main.ProfileScreen
 import com.src.kanchanaratplace.screen.main.SettingScaffold
-import com.src.kanchanaratplace.screen.share.QRCodeScreen
-import com.src.kanchanaratplace.screen.reservation.ReservationDetailScreen
-import com.src.kanchanaratplace.screen.reservation.ReservationScreen
-import com.src.kanchanaratplace.screen.reservation.ReservationStatusScreen
-import com.src.kanchanaratplace.screen.main.SettingScreen
+import com.src.kanchanaratplace.screen.member.MemberApartmentScaffold
+import com.src.kanchanaratplace.screen.member.MemberBillDetailScaffold
+import com.src.kanchanaratplace.screen.member.MemberBillScaffold
+import com.src.kanchanaratplace.screen.member.MemberCheckBIllScaffold
 import com.src.kanchanaratplace.screen.owner.BillEditScaffold
 import com.src.kanchanaratplace.screen.owner.BillsScaffold
-import com.src.kanchanaratplace.screen.owner.BillsScreen
 import com.src.kanchanaratplace.screen.owner.ContractDetailScaffold
 import com.src.kanchanaratplace.screen.owner.ContractListScaffold
 import com.src.kanchanaratplace.screen.owner.ReservedDetailScaffold
@@ -50,8 +36,8 @@ import com.src.kanchanaratplace.screen.reservation.ReservationScaffold
 import com.src.kanchanaratplace.screen.reservation.ReservationStatusScaffold
 import com.src.kanchanaratplace.screen.share.QrCodeScaffold
 import com.src.kanchanaratplace.screen.share.StatusScaffold
-import com.src.kanchanaratplace.screen.share.StatusScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
@@ -160,6 +146,22 @@ fun NavGraph(navController: NavHostController) {
 
         composable(Screen.ContractDetail.route) {
             ContractDetailScaffold(navController)
+        }
+
+        composable(Screen.MemberApartment.route) {
+            MemberApartmentScaffold(navController)
+        }
+
+        composable(Screen.MemberBill.route) {
+            MemberBillScaffold(navController)
+        }
+
+        composable(Screen.MemberBillDetail.route) {
+            MemberBillDetailScaffold(navController)
+        }
+
+        composable(Screen.MemberCheckBill.route) {
+            MemberCheckBIllScaffold(navController)
         }
     }
 }

@@ -30,6 +30,11 @@ interface RoomAPI {
         @Path("room_id") roomId: Int
     ) : Call<DefaultRooms>
 
+    @POST("make-room-unavailable/{room_id}")
+    fun makeRoomUnavailable(
+        @Path("room_id") roomId : Int
+    ) : Call<ResponseBody>
+
     @Multipart
     @PUT("reserving-room/{room_id}")
     fun reservingRoom(
@@ -75,6 +80,11 @@ interface RoomAPI {
 
     @GET("get-new-contracts")
     fun getNewContracts() : Call<List<Contract>>
+
+    @POST("approve-contract/{contract_id}")
+    fun approveContract(
+        @Path("contract_id") contractId : Int
+    ) : Call<ResponseBody>
 
     companion object{
         fun create() : RoomAPI{

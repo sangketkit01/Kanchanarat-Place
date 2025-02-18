@@ -1,5 +1,7 @@
 package com.src.kanchanaratplace.screen.owner
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,6 +29,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,12 +39,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
+import com.src.kanchanaratplace.api_util.approveContractUtility
+import com.src.kanchanaratplace.api_util.approveReservationUtility
+import com.src.kanchanaratplace.api_util.makeRoomUnavailableUtility
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.component.SlipImageDialog
 import com.src.kanchanaratplace.component.SmallWhiteBlueButton
@@ -64,6 +72,9 @@ fun ContractDetailScreen(navController : NavHostController){
 
     var contractSlipAlert by remember { mutableStateOf(false) }
     var feeSlipAlert by remember { mutableStateOf(false) }
+    var approveAlert by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     val scrollState = rememberScrollState()
     Column(
@@ -477,7 +488,7 @@ fun ContractDetailScreen(navController : NavHostController){
 
             FilledTonalButton(
                 onClick = {
-
+                    approveAlert = true
                 },
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = Color(94, 144, 255, 255)
@@ -510,5 +521,61 @@ fun ContractDetailScreen(navController : NavHostController){
         SlipImageDialog(contractData?.slipPath) {
             contractSlipAlert = false
         }
+    }
+
+    if (approveAlert){
+        AlertDialog(
+            onDismissRequest = {approveAlert = false},
+            title = { Text("ยืนยันการอนุุมัติ") },
+            text = { Text("คุณต้องการจะอนุมัติสัญญาของคุณ ${reservationData?.name} หรือไม่?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        contractData?.contractId?.let {
+                            approveContractUtility(
+                                contractId = it,
+                                onResponse = {
+                                    makeRoomUnavailableUtility(
+                                        roomId = contractData.roomId,
+                                        onResponse = {
+                                            Toast.makeText(context,"อนุมัติสัญญาสำเร็จ",Toast.LENGTH_SHORT).show()
+                                            navController.popBackStack()
+                                        },
+                                        onElse = {
+                                            Toast.makeText(context,"เปลี่ยนสถานะห้องไม่สำเร็จ",Toast.LENGTH_SHORT).show()
+                                        },
+                                        onFailure = {t->
+                                            Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
+                                            t.message?.let { Log.e("Error", t.message!!) }
+                                        }
+                                    )
+                                },
+                                onElse = {
+                                    Toast.makeText(context,"อนุมัติสัญญาล้มเหลว",Toast.LENGTH_SHORT).show()
+                                },
+                                onFailure = { t->
+                                    Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
+                                    t.message?.let { Log.e("Error", t.message!!) }
+                                }
+                            )
+                        }
+                    }
+                ) {
+                    Text("ตกลง")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {approveAlert = false}) {
+                    Text("ยกเลิก")
+                }
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.border(
+                width = 1.dp,
+                color = Color.LightGray,
+                shape = RoundedCornerShape(10.dp)
+            )
+        )
     }
 }

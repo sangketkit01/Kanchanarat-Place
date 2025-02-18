@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Rooms(
     @Expose
     @SerializedName("room_id")
@@ -25,7 +26,7 @@ data class Rooms(
     @Expose
     @SerializedName("room floor")
     val floor : Int
-)
+) : Parcelable
 
 @Parcelize
 data class DefaultRooms(

@@ -228,16 +228,7 @@ fun LoginScreen(navController : NavHostController){
                                         Toast.makeText(context,"เข้าสู่ระบบสำเร็จ",Toast.LENGTH_SHORT)
                                             .show()
                                         sharePreferences.loggedIn = true
-                                        sharePreferences.member = Member(
-                                            response.body()!!.memberId,
-                                            response.body()!!.role,
-                                            response.body()!!.room,
-                                            response.body()!!.username,
-                                            response.body()!!.name,
-                                            response.body()!!.email,
-                                            response.body()!!.phone,
-                                            response.body()!!.cardNumber
-                                        )
+                                        sharePreferences.member = response.body()!!
 
                                         navController.navigate(Screen.First.route)
                                     }else{

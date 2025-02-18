@@ -45,6 +45,7 @@ fun SampleTopAppBar(navController : NavHostController,title : String){
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White,
+                    textAlign = TextAlign.Center
                 )
             }
         },

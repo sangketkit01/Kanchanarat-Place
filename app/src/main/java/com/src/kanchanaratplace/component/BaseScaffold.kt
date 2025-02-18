@@ -10,11 +10,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.navigation.AdminBottomBar
 import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
 import com.src.kanchanaratplace.navigation.BottomBar
 import com.src.kanchanaratplace.navigation.UnAuthenticationTopBar
 import com.src.kanchanaratplace.screen.main.FirstScreen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import com.src.kanchanaratplace.status.Role
 
 @Composable
 fun BaseScaffold(navController : NavHostController , content : @Composable () -> Unit){
@@ -29,7 +31,13 @@ fun BaseScaffold(navController : NavHostController , content : @Composable () ->
                 UnAuthenticationTopBar(navController)
             }
         },
-        bottomBar = { BottomBar(navController) }
+        bottomBar = {
+            if(sharePreferences.member?.roleId == Role.OWNER.code){
+                AdminBottomBar(navController)
+            }else{
+                BottomBar(navController)
+            }
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier

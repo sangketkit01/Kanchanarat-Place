@@ -11,20 +11,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.navigation.AdminBottomBar
 import com.src.kanchanaratplace.navigation.AuthenticatedTopBar
 import com.src.kanchanaratplace.navigation.BottomBar
 import com.src.kanchanaratplace.navigation.SampleActionTopAppBar
 import com.src.kanchanaratplace.navigation.SampleTopAppBar
 import com.src.kanchanaratplace.navigation.UnAuthenticationTopBar
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import com.src.kanchanaratplace.status.Role
 
 @Composable
 fun SampleScaffold(navController : NavHostController,title : String ,content : @Composable () -> Unit){
+    val context = LocalContext.current
+    val sharePreferences = remember { MemberSharePreferencesManager(context) }
+
     Scaffold(
         topBar = {
             SampleTopAppBar(navController,title)
         },
-        bottomBar = { BottomBar(navController) }
+        bottomBar = {
+            if(sharePreferences.member?.roleId == Role.OWNER.code){
+                AdminBottomBar(navController)
+            }else{
+                BottomBar(navController)
+            }
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -41,6 +52,10 @@ fun SampleScaffold(navController : NavHostController,title : String ,content : @
 fun SampleActionScaffold(navController: NavHostController , title: String,
                          icon : ImageVector,  onClick : ()-> Unit,
                          content:@Composable () -> Unit){
+
+    val context = LocalContext.current
+    val sharePreferences = remember { MemberSharePreferencesManager(context) }
+
     Scaffold(
         topBar = {
             SampleActionTopAppBar(
@@ -50,7 +65,13 @@ fun SampleActionScaffold(navController: NavHostController , title: String,
                 icon = icon
             )
         },
-        bottomBar = { BottomBar(navController) }
+        bottomBar = {
+            if(sharePreferences.member?.roleId == Role.OWNER.code){
+                AdminBottomBar(navController)
+            }else{
+                BottomBar(navController)
+            }
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier

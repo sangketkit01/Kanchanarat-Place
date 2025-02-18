@@ -44,6 +44,11 @@ fun getOneRoomUtility(roomId: Int, onResponse: (DefaultRooms) -> Unit, onElse: (
     RoomClient.instance.getOneRoom(roomId).enqueueCallback(onResponse, onElse, onFailure)
 }
 
+fun makeRoomUnavailableUtility(roomId: Int, onResponse: (ResponseBody) -> Unit,
+                               onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit){
+    RoomClient.instance.makeRoomUnavailable(roomId).enqueueCallback(onResponse,onElse,onFailure)
+}
+
 fun reservingRoomUtility(roomId: Int, statusId: Int, name: String, phone: String, email: String, line: String,
                          slipPath: MultipartBody.Part, onResponse: (ResponseBody) -> Unit,
                          onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit) {
@@ -79,7 +84,8 @@ fun approveReservationUtility(reservationId: Int, onResponse: (ResponseBody) -> 
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun insertContractUtility(roomId: Int,reservationId: Int, contractDetail: String, contractLength: Int, slipPath: MultipartBody.Part,
+fun insertContractUtility(roomId: Int,reservationId: Int, contractDetail: String, contractLength: Int,
+                          slipPath: MultipartBody.Part,
                           onResponse: (ResponseBody) -> Unit, onElse: (Response<ResponseBody>) -> Unit,
                           onFailure: (Throwable) -> Unit) {
     val expireAt = LocalDateTime.now().plusMonths(6).format(DateTimeFormatter
@@ -98,6 +104,11 @@ fun insertContractUtility(roomId: Int,reservationId: Int, contractDetail: String
 fun getNewContractsUtility(onResponse: (List<Contract>) -> Unit, onElse: (Response<List<Contract>>) -> Unit,
                            onFailure: (Throwable) -> Unit){
     RoomClient.instance.getNewContracts().enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun approveContractUtility(contractId : Int, onResponse: (ResponseBody) -> Unit,
+                           onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit){
+    RoomClient.instance.approveContract(contractId).enqueueCallback(onResponse,onElse,onFailure)
 }
 
 private fun String.toRequestBody() = this.toRequestBody("text/plain".toMediaTypeOrNull())

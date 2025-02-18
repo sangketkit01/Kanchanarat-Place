@@ -1,4 +1,4 @@
-package com.src.kanchanaratplace.screen.main
+package com.src.kanchanaratplace.screen.owner
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
