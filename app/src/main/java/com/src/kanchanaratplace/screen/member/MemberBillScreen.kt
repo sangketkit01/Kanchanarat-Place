@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,11 +44,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.api_util.getOneRoomUtility
+import com.src.kanchanaratplace.api_util.getRoomBillsUtility
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.data.Bill
 import com.src.kanchanaratplace.data.DefaultRooms
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import com.src.kanchanaratplace.status.OtherStatus
 
 @Composable
 fun MemberBillScaffold(navController: NavHostController){
@@ -62,7 +65,7 @@ fun MemberBillScreen(navController : NavHostController){
     val sharePreferences = remember { MemberSharePreferencesManager(context) }
 
     var roomData by remember { mutableStateOf<DefaultRooms?>(null) }
-    var billData by remember { mutableStateOf<Bill?>(null) }
+    var billDataList by remember { mutableStateOf<List<Bill>?>(null) }
 
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
@@ -78,6 +81,20 @@ fun MemberBillScreen(navController : NavHostController){
                         roomId = it,
                         onResponse = { response->
                             roomData = response
+                        },
+                        onElse = {
+                            Toast.makeText(context,"Data not found", Toast.LENGTH_SHORT).show()
+                        },
+                        onFailure = { t->
+                            Toast.makeText(context,"Error Check LogCat", Toast.LENGTH_SHORT).show()
+                            t.message?.let { Log.e("Error",it) }
+                        }
+                    )
+
+                    getRoomBillsUtility(
+                        roomId = it,
+                        onResponse = { response->
+                            billDataList = response
                         },
                         onElse = {
                             Toast.makeText(context,"Data not found", Toast.LENGTH_SHORT).show()
@@ -130,126 +147,94 @@ fun MemberBillScreen(navController : NavHostController){
                 )
             }
 
-            Card (
-                modifier = Modifier.fillMaxWidth()
-                    .padding(vertical = 10.dp)
-                    .clickable {
-                        navController.navigate(Screen.MemberBillDetail.route)
-                    },
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                ),
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = Color.LightGray
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
-                )
-            ){
-                Row (
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Column (
-                        horizontalAlignment = Alignment.Start
-                    ){
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            Text(
-                                text = "ค้างชำระ",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
 
-                            Spacer(modifier = Modifier.width(8.dp))
+            billDataList?.forEach { billData->
+                var status by remember { mutableStateOf("") }
+                var statusImage by remember { mutableIntStateOf(0) }
+                var mainImage by remember { mutableIntStateOf(0) }
 
-                            Image(
-                                painter = painterResource(R.drawable.red_warning),
-                                contentScale = ContentScale.Fit,
-                                contentDescription = null,
-                                modifier = Modifier.size(25.dp)
-                            )
-                        }
-
-                        Text(
-                            text = "บิลค่าเช่าประจำเดือน มกราคม /2025\n" +
-                                    "จำนวนเงิน 4,850 บาท",
-                            fontSize = 13.sp
-                        )
-
+                when(billData.statusId){
+                    OtherStatus.PENDING.code -> {
+                        status = "ค้างชำระ"
+                        statusImage = R.drawable.red_warning
+                        mainImage = R.drawable.red_paper
                     }
-
-                    Image(
-                        painter = painterResource(R.drawable.red_paper),
-                        contentDescription = null,
-                        modifier = Modifier.size(50.dp),
-                        contentScale = ContentScale.Fit
-                    )
+                    OtherStatus.EXPIRED.code -> {
+                        status = "เลยกำหนดเวลา"
+                        statusImage = R.drawable.red_warning
+                        mainImage = R.drawable.red_paper
+                    }
+                    OtherStatus.SUCCESS.code -> {
+                        status = "ชำระแล้ว"
+                        statusImage = R.drawable.check_green
+                        mainImage = R.drawable.green_paper
+                    }
                 }
-            }
 
-            Card (
-                modifier = Modifier.fillMaxWidth()
-                    .padding(vertical = 10.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                ),
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = Color.LightGray
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
-                )
-            ){
-                Row (
+                Card (
                     modifier = Modifier.fillMaxWidth()
-                        .padding(10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(vertical = 10.dp)
+                        .clickable {
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "bill_data" , billData
+                            )
+                            navController.navigate(Screen.MemberBillDetail.route)
+                        },
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(10.dp),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = Color.LightGray
+                    ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 4.dp
+                    )
                 ){
-                    Column (
-                        horizontalAlignment = Alignment.Start
+                    Row (
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ){
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
+                        Column (
+                            horizontalAlignment = Alignment.Start
                         ){
+                            Row (
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                Text(
+                                    text = status,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Image(
+                                    painter = painterResource(statusImage),
+                                    contentScale = ContentScale.Fit,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(25.dp)
+                                )
+                            }
+
                             Text(
-                                text = "ค้างชำระ",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
+                                text = "บิลค่าเช่าประจำเดือน กุมภาพันธ์ /2025\n" +
+                                        "จำนวนเงิน ${billData.totalPrice} บาท",
+                                fontSize = 16.sp
                             )
 
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Image(
-                                painter = painterResource(R.drawable.red_warning),
-                                contentScale = ContentScale.Fit,
-                                contentDescription = null,
-                                modifier = Modifier.size(25.dp)
-                            )
                         }
 
-                        Text(
-                            text = "บิลค่าเช่าประจำเดือน มกราคม /2025\n" +
-                                    "จำนวนเงิน 4,850 บาท",
-                            fontSize = 13.sp
+                        Image(
+                            painter = painterResource(mainImage),
+                            contentDescription = null,
+                            modifier = Modifier.size(50.dp),
+                            contentScale = ContentScale.Fit
                         )
-
                     }
-
-                    Image(
-                        painter = painterResource(R.drawable.red_paper),
-                        contentDescription = null,
-                        modifier = Modifier.size(50.dp),
-                        contentScale = ContentScale.Fit
-                    )
                 }
             }
         }

@@ -86,6 +86,7 @@ fun QRCodeScreen(navController : NavHostController){
     val previousRoute = navController.previousBackStackEntry?.savedStateHandle?.get<String>("previous_route")
     val reservation = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation")
 
+
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     fun Context.getImagePart(uri: Uri): MultipartBody.Part {
@@ -228,7 +229,7 @@ fun QRCodeScreen(navController : NavHostController){
         }
 
         if(selectedImageUri != null){
-            Text("เลือกรูปภาพแล้ว : ${context.getImagePart(selectedImageUri!!).toString()}",
+            Text("เลือกรูปภาพแล้ว",
                 modifier = Modifier.padding(horizontal = 25.dp))
         }
 

@@ -27,9 +27,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,16 +44,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.src.kanchanaratplace.api_util.getBill
+import com.src.kanchanaratplace.api_util.getBillUtility
 import com.src.kanchanaratplace.api_util.getRoomUtility
 import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.component.FloorSelection
+import com.src.kanchanaratplace.component.MyDatePicker
 import com.src.kanchanaratplace.component.SampleActionScaffold
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.data.Bill
 import com.src.kanchanaratplace.data.Rooms
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.status.RoomStatus
+import java.util.Calendar
 
 @Composable
 fun BillsScaffold(navController: NavHostController){
@@ -72,16 +76,40 @@ fun BillsScreen(navController : NavHostController){
     val scrollState = rememberScrollState()
     var selectedFloor by  remember { mutableIntStateOf(1) }
 
+    val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+
+    var selectedMonthIndex by remember { mutableIntStateOf(currentMonth) }
+    var selectedYearCE by remember { mutableIntStateOf(currentYear) }
+
     val roomList = remember { mutableStateListOf<Rooms>() }
 
     val context = LocalContext.current
 
+    val billDataMap = remember { mutableStateMapOf<Int, Bill?>() }
     LaunchedEffect(selectedFloor) {
         getRoomUtility(
             floor = selectedFloor,
             onResponse = { response ->
                 roomList.clear()
                 roomList.addAll(response ?: emptyList())
+                roomList.forEach { room ->
+                    getBillUtility(
+                        room.roomId,
+                        selectedMonthIndex,
+                        selectedYearCE,
+                        onResponse = { response ->
+                            billDataMap[room.roomId] = response
+                        },
+                        onElse = {
+                            billDataMap[room.roomId] = null
+                            Toast.makeText(context, "เกิดข้อผิดพลาด", Toast.LENGTH_SHORT).show()
+                        },
+                        onFailure = { t ->
+                            t.message?.let { Log.e("Error", it) }
+                        }
+                    )
+                }
             },
             onElse = {
                 Toast.makeText(context,"เกิดข้อผิดพลาดในการโหลดข้อมูล",Toast.LENGTH_SHORT).show()
@@ -111,16 +139,12 @@ fun BillsScreen(navController : NavHostController){
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
-                Text(
-                    text = "เดือน/ปี",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
 
-                Text(
-                    text = "กุมภาพันธ์/2568",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold
+                MyDatePicker(
+                    selectedMonthIndex = selectedMonthIndex,
+                    selectedYearCE = selectedYearCE,
+                    onMonthSelected = { selectedMonthIndex = it },
+                    onYearSelected = { selectedYearCE = it }
                 )
             }
         }
@@ -132,39 +156,51 @@ fun BillsScreen(navController : NavHostController){
         }
 
 
-        roomList.forEach { room->
-            var billData by remember { mutableStateOf<Bill?>(null) }
-            getBill(
-                room.roomId,
-                2,
-                2025,
-                onResponse = { response->
-                    billData = response
-                },
-                onElse = {
-                    Toast.makeText(context,"เกิดข้อผิดพลาด",Toast.LENGTH_SHORT).show()
-                },
-                onFailure = { t->
-                    t.message?.let { Log.e("Error", t.message!!) }
-                }
-            )
-            Card (
-                modifier = Modifier.fillMaxWidth()
+        val triggerReload by remember { derivedStateOf { selectedMonthIndex to selectedYearCE } }
+
+        LaunchedEffect(triggerReload) {
+            billDataMap.clear()
+            roomList.forEach { room ->
+                getBillUtility(
+                    room.roomId,
+                    selectedMonthIndex,
+                    selectedYearCE,
+                    onResponse = { response ->
+                        billDataMap[room.roomId] = response
+                    },
+                    onElse = {
+                        billDataMap[room.roomId] = null
+                        Toast.makeText(context, "เกิดข้อผิดพลาด", Toast.LENGTH_SHORT).show()
+                    },
+                    onFailure = { t ->
+                        t.message?.let { Log.e("Error", it) }
+                    }
+                )
+            }
+        }
+
+        roomList.forEach { room ->
+            val billData = billDataMap[room.roomId]
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(10.dp),
                 shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 )
-            ){
-                Row (
-                    modifier = Modifier.fillMaxSize()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
                         .padding(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly
-                ){
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             text = "ห้อง",
                             fontSize = 16.sp,
@@ -180,7 +216,7 @@ fun BillsScreen(navController : NavHostController){
 
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             text = "หน่วยน้ำที่ใช้",
                             fontSize = 12.sp,
@@ -197,7 +233,7 @@ fun BillsScreen(navController : NavHostController){
 
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             text = "ค่าไฟ",
                             fontSize = 12.sp,
@@ -214,7 +250,7 @@ fun BillsScreen(navController : NavHostController){
 
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             text = "รวม (บาท)",
                             fontSize = 12.sp,
@@ -232,31 +268,48 @@ fun BillsScreen(navController : NavHostController){
                     Button(
                         onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set(
-                                "bill_data",billData
+                                "bill_data", billData
                             )
                             navController.currentBackStackEntry?.savedStateHandle?.set(
-                                "room_data" , room
+                                "room_data", room
                             )
                             navController.navigate(Screen.BillEdit.route)
                         },
-                        modifier = Modifier.width(72.dp).height(58.dp),
+                        modifier = Modifier
+                            .width(72.dp)
+                            .height(58.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if(room.status == RoomStatus.ROOM_OCCUPIED.message){ Color(172, 198, 255, 255)}
-                                            else{Color(240, 240, 240, 255) },
-                            contentColor = if(room.status == RoomStatus.ROOM_OCCUPIED.message){Color(94, 144, 255, 255)}
-                                            else{Color(112, 110, 110, 255)
+                            containerColor = if (room.status == RoomStatus.ROOM_OCCUPIED.message) {
+                                Color(172, 198, 255, 255)
+                            } else {
+                                Color(240, 240, 240, 255)
+                            },
+                            contentColor = if (room.status == RoomStatus.ROOM_OCCUPIED.message) {
+                                Color(94, 144, 255, 255)
+                            } else {
+                                Color(112, 110, 110, 255)
                             }
                         ),
                         shape = RoundedCornerShape(10.dp),
                         enabled = room.status == RoomStatus.ROOM_OCCUPIED.message
                     ) {
-                        if(room.status == RoomStatus.ROOM_OCCUPIED.message){
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }else{
+                        if (room.status == RoomStatus.ROOM_OCCUPIED.message) {
+                            if (billData != null) {
+                                Text(
+                                    text = "แก้\n" +
+                                            "ไข",
+                                    fontWeight = FontWeight.SemiBold,
+                                    textAlign = TextAlign.Center
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+
+                        } else {
                             Text(
                                 text = "ห้อง\n" +
                                         "ว่าง",
@@ -270,6 +323,7 @@ fun BillsScreen(navController : NavHostController){
                 }
             }
         }
+
 
     }
 }

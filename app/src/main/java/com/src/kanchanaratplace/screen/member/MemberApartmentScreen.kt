@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
+import com.src.kanchanaratplace.api_util.getLatestBillUtility
 import com.src.kanchanaratplace.api_util.getNewContractsUtility
 import com.src.kanchanaratplace.api_util.getOneRoomUtility
 import com.src.kanchanaratplace.component.BaseScaffold
@@ -53,6 +56,7 @@ import com.src.kanchanaratplace.data.Bill
 import com.src.kanchanaratplace.data.DefaultRooms
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import com.src.kanchanaratplace.status.OtherStatus
 
 @Composable
 fun MemberApartmentScaffold(navController: NavHostController){
@@ -79,7 +83,7 @@ fun MemberApartmentScreen(navController : NavHostController){
         MemberApartmentMenu(painterResource(R.drawable.bill_menu),"บิลค่าเช่า",Screen.MemberBill.route),
         MemberApartmentMenu(painterResource(R.drawable.repair_menu),"แจ้งซ่อม",Screen.First.route),
         MemberApartmentMenu(painterResource(R.drawable.package_menu),"พัสดุ",Screen.First.route),
-        MemberApartmentMenu(painterResource(R.drawable.news_menu),"ข่าวสาร",Screen.First.route)
+        MemberApartmentMenu(painterResource(R.drawable.news_menu),"ข่าวสาร",Screen.News.route)
     )
 
     val secondRowMenu = listOf(
@@ -108,6 +112,20 @@ fun MemberApartmentScreen(navController : NavHostController){
                             Toast.makeText(context,"Data not found", Toast.LENGTH_SHORT).show()
                         },
                         onFailure = { t->
+                            Toast.makeText(context,"Error Check LogCat", Toast.LENGTH_SHORT).show()
+                            t.message?.let { Log.e("Error",it) }
+                        }
+                    )
+
+                    getLatestBillUtility(
+                        roomId = it,
+                        onResponse = { response->
+                            billData = response
+                        },
+                        onElse = {
+                            Toast.makeText(context,"Data not found", Toast.LENGTH_SHORT).show()
+                        },
+                        onFailure = {t->
                             Toast.makeText(context,"Error Check LogCat", Toast.LENGTH_SHORT).show()
                             t.message?.let { Log.e("Error",it) }
                         }
@@ -169,7 +187,7 @@ fun MemberApartmentScreen(navController : NavHostController){
             ){
                 Row (
                     modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 15.dp),
+                        .padding(horizontal = 15.dp, vertical = 15.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     firstRowMenu.forEach { menu->
@@ -187,19 +205,19 @@ fun MemberApartmentScreen(navController : NavHostController){
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(172, 198, 255, 255)
                                 ),
-                                modifier = Modifier.width(67.dp).height(65.dp)
+                                modifier = Modifier.size(80.dp)
                             ) {
-                                Icon(
+                                Image(
                                     painter = menu.icon,
                                     contentDescription = null,
                                     modifier = Modifier.size(50.dp),
-                                    tint = Color.Black
+                                    contentScale = ContentScale.Fit
                                 )
                             }
 
                             Text(
                                 text = menu.title,
-                                fontSize = 13.sp,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(vertical = 5.dp)
@@ -210,7 +228,7 @@ fun MemberApartmentScreen(navController : NavHostController){
 
                 Row (
                     modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 15.dp),
+                        .padding(horizontal = 15.dp, vertical = 15.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     secondRowMenu.forEach { menu->
@@ -218,29 +236,24 @@ fun MemberApartmentScreen(navController : NavHostController){
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
                             Button(
-                                onClick = {
-
-                                },
+                                onClick = {},
                                 shape = RoundedCornerShape(10.dp),
-                                elevation = ButtonDefaults.buttonElevation(
-                                    defaultElevation = 4.dp
-                                ),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(172, 198, 255, 255)
-                                ),
-                                modifier = Modifier.width(67.dp).height(65.dp)
+                                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(172, 198, 255, 255)),
+                                modifier = Modifier.size(80.dp)
                             ) {
-                                Icon(
+                                Image(
                                     painter = menu.icon,
                                     contentDescription = null,
                                     modifier = Modifier.size(50.dp),
-                                    tint = Color.Black
+                                    contentScale = ContentScale.Fit
                                 )
                             }
 
+
                             Text(
                                 text = menu.title,
-                                fontSize = 13.sp,
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(vertical = 5.dp)
@@ -257,14 +270,21 @@ fun MemberApartmentScreen(navController : NavHostController){
             ){
                 Text(
                     text = "การชำระเงิน",
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.align(Alignment.Start)
                         .padding(start = 10.dp, bottom = 5.dp)
                 )
 
                 Card (
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable(enabled = billData != null) {
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "bill_data" , billData
+                            )
+
+                            navController.navigate(Screen.MemberBillDetail.route)
+                        },
                     colors = CardDefaults.cardColors(
                         containerColor = Color.White
                     ),
@@ -279,46 +299,86 @@ fun MemberApartmentScreen(navController : NavHostController){
                 ){
                     Row (
                         modifier = Modifier.fillMaxWidth()
-                            .padding(10.dp),
+                            .padding(20.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
-                        Column (
-                            horizontalAlignment = Alignment.Start
-                        ){
-                            Row (
-                                verticalAlignment = Alignment.CenterVertically
+                        if(billData != null){
+                            var status by remember { mutableStateOf("") }
+                            var statusImage by remember { mutableIntStateOf(0) }
+                            var mainImage by remember { mutableIntStateOf(0) }
+
+                            when(billData!!.statusId){
+                                OtherStatus.PENDING.code -> {
+                                    status = "ค้างชำระ"
+                                    statusImage = R.drawable.red_warning
+                                    mainImage = R.drawable.red_paper
+                                }
+                                OtherStatus.EXPIRED.code -> {
+                                    status = "เลยกำหนดเวลา"
+                                    statusImage = R.drawable.red_warning
+                                    mainImage = R.drawable.red_paper
+                                }
+                                OtherStatus.SUCCESS.code -> {
+                                    status = "ชำระแล้ว"
+                                    statusImage = R.drawable.check_green
+                                    mainImage = R.drawable.green_paper
+                                }
+                            }
+                            Column (
+                                horizontalAlignment = Alignment.Start
                             ){
+                                Row (
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    Text(
+                                        text = status,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    Image(
+                                        painter = painterResource(id = statusImage),
+                                        contentScale = ContentScale.Fit,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+
+                                }
+
                                 Text(
-                                    text = "ค้างชำระ",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    text = "บิลค่าเช่าประจำเดือน กุมภาพันธ์ 2025\n" +
+                                            "จำนวนเงิน ${billData?.totalPrice ?: 0} บาท",
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 16.sp
                                 )
 
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                Image(
-                                    painter = painterResource(R.drawable.red_warning),
-                                    contentScale = ContentScale.Fit,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(25.dp)
-                                )
                             }
 
-                            Text(
-                                text = "บิลค่าเช่าประจำเดือน มกราคม /2025\n" +
-                                        "จำนวนเงิน 4,850 บาท",
-                                fontSize = 13.sp
+                            Image(
+                                painter = painterResource(id = mainImage),
+                                contentDescription = null,
+                                modifier = Modifier.size(50.dp),
+                                contentScale = ContentScale.Fit
                             )
-
+                        }else{
+                            Column (
+                                modifier = Modifier.fillMaxSize()
+                                    .padding(10.dp)
+                                    .height(115.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ){
+                                Text(
+                                    text = "ยังไม่มีบิล",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color(165, 165, 165, 255)
+                                )
+                            }
                         }
-
-                        Image(
-                            painter = painterResource(R.drawable.red_paper),
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp),
-                            contentScale = ContentScale.Fit
-                        )
                     }
                 }
             }
@@ -330,7 +390,7 @@ fun MemberApartmentScreen(navController : NavHostController){
             ) {
                 Text(
                     text = "สถานะการแจ้งซ่อม",
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.align(Alignment.Start)
                         .padding(start = 10.dp, bottom = 5.dp)

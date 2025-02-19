@@ -21,6 +21,8 @@ import com.src.kanchanaratplace.screen.member.MemberApartmentScaffold
 import com.src.kanchanaratplace.screen.member.MemberBillDetailScaffold
 import com.src.kanchanaratplace.screen.member.MemberBillScaffold
 import com.src.kanchanaratplace.screen.member.MemberCheckBIllScaffold
+import com.src.kanchanaratplace.screen.member.NewsDetailScaffold
+import com.src.kanchanaratplace.screen.member.NewsScaffold
 import com.src.kanchanaratplace.screen.owner.BillEditScaffold
 import com.src.kanchanaratplace.screen.owner.BillsScaffold
 import com.src.kanchanaratplace.screen.owner.ContractDetailScaffold
@@ -162,6 +164,14 @@ fun NavGraph(navController: NavHostController) {
 
         composable(Screen.MemberCheckBill.route) {
             MemberCheckBIllScaffold(navController)
+        }
+
+        composable(Screen.News.route) {
+            NewsScaffold(navController)
+        }
+
+        composable(Screen.NewsDetail.route) {
+            NewsDetailScaffold(navController)
         }
     }
 }

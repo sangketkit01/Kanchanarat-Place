@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.src.kanchanaratplace.R
 
 @Composable
-fun CardStatus(status : String,title : String , content : String){
+fun CardStatus(status : String,title : String , content : String,err : Boolean){
     Card (
         modifier = Modifier.fillMaxWidth()
             .padding(20.dp)
@@ -46,11 +46,15 @@ fun CardStatus(status : String,title : String , content : String){
             verticalArrangement = Arrangement.Center
         ){
             Icon(
-                painter = painterResource(R.drawable.check_green),
+                painter = painterResource(
+                    id = if (!err) R.drawable.check_green
+                    else R.drawable.notfound
+                ),
                 contentDescription = null,
                 modifier = Modifier.width(80.dp).height(80.dp)
                     .padding(bottom = 10.dp),
-                tint = Color(50, 161, 41, 255)
+                tint = if (!err) Color(50, 161, 41, 255)
+                else Color(251, 35, 35, 255)
             )
 
             Text(

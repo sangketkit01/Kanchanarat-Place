@@ -1,7 +1,11 @@
 package com.src.kanchanaratplace.screen.member
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -47,10 +51,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.api_util.getOneRoomUtility
+import com.src.kanchanaratplace.api_util.payBillUtility
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.data.Bill
 import com.src.kanchanaratplace.data.DefaultRooms
+import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.util.UUID
 
 @Composable
 fun MemberCheckBIllScaffold(navController: NavHostController){
@@ -65,7 +75,7 @@ fun MemberCheckBillScreen(navController : NavHostController){
     val sharePreferences = remember { MemberSharePreferencesManager(context) }
 
     var roomData by remember { mutableStateOf<DefaultRooms?>(null) }
-    var billData by remember { mutableStateOf<Bill?>(null) }
+    var billData = navController.previousBackStackEntry?.savedStateHandle?.get<Bill>("bill_data")
 
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
@@ -95,6 +105,39 @@ fun MemberCheckBillScreen(navController : NavHostController){
         }
     }
 
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    fun Context.getImagePart(uri: Uri): MultipartBody.Part {
+        val stream = contentResolver.openInputStream(uri)
+        val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
+        val request = stream?.let {
+            RequestBody.create(mimeType.toMediaTypeOrNull(), it.readBytes())
+        }
+
+        val extension = when(mimeType) {
+            "image/jpeg", "image/jpg" -> ".jpg"
+            "image/png" -> ".png"
+            else -> ".jpg"
+        }
+
+        val uuid = UUID.randomUUID().toString()
+        val filename = "image_${uuid}${extension}"
+
+        return MultipartBody.Part.createFormData(
+            "slip_part",
+            filename,
+            request!!
+        )
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+        }
+    }
+
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -114,7 +157,8 @@ fun MemberCheckBillScreen(navController : NavHostController){
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = "ค่าเช่าเดือน มกราคม 2568 : 4,326 บาท",
+                text = "ค่าเช่าเดือน มกราคม 2568 : " +
+                        "${(billData?.totalPrice ?: 0).toString().format("%,d")} บาท",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.clip(RoundedCornerShape(10.dp))
@@ -156,13 +200,6 @@ fun MemberCheckBillScreen(navController : NavHostController){
                         fontWeight = FontWeight.ExtraBold,
                         textAlign = TextAlign.Center
                     )
-
-                    Text(
-                        text = "ยอดชำระ 4,326 บาท",
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center
-                    )
                 }
             }
 
@@ -191,7 +228,7 @@ fun MemberCheckBillScreen(navController : NavHostController){
             ){
                 OutlinedButton(
                     onClick = {
-
+                        launcher.launch("image/*")
                     },
                     border = BorderStroke(1.dp, Color.Gray),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Gray),
@@ -205,17 +242,44 @@ fun MemberCheckBillScreen(navController : NavHostController){
                 }
             }
 
+            if(selectedImageUri != null){
+                Text(
+                    text = "เลือกรูปภาพแล้ว"
+                )
+            }
+
             Spacer(modifier = Modifier.height(15.dp))
 
             Button(
                 onClick = {
+                    selectedImageUri?.let {
+                        payBillUtility(
+                            billData?.billId ?: 0,
+                            context.getImagePart(it),
+                            onResponse = {
+                                Toast.makeText(context, "ส่งบิลสำเร็จ รอดำเนินการ",
+                                    Toast.LENGTH_SHORT).show()
 
+                                navController.navigate(Screen.MemberApartment.route)
+                            },
+                            onElse = { response->
+                                Toast.makeText(context, "เกิดข้อผิดพลาด ส่งบิลไม่สำเร็จ",
+                                    Toast.LENGTH_SHORT).show()
+                                response.errorBody()?.toString()?.let { it1 -> Log.e("Error", it1) }
+                            },
+                            onFailure = { t->
+                                Toast.makeText(context, "Error Check LogCat", Toast.LENGTH_SHORT).show()
+                                t.message?.let {it2-> Log.e("Error", it2) }
+                            }
+                        )
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(94, 144, 255, 255),
                     contentColor = Color.White
                 ),
-                modifier = Modifier.width(226.dp).height(39.dp)
+                modifier = Modifier.width(226.dp).height(39.dp),
+                enabled = selectedImageUri != null
             ) {
                 Text(
                     text = "เสร็จสิ้น",

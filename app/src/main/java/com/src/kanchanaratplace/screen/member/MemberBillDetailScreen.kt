@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,6 +49,7 @@ import com.src.kanchanaratplace.data.Bill
 import com.src.kanchanaratplace.data.DefaultRooms
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import com.src.kanchanaratplace.status.OtherStatus
 
 @Composable
 fun MemberBillDetailScaffold(navController: NavHostController){
@@ -62,7 +64,13 @@ fun MemberBillDetailScreen(navController : NavHostController){
     val sharePreferences = remember { MemberSharePreferencesManager(context) }
 
     var roomData by remember { mutableStateOf<DefaultRooms?>(null) }
-    var billData by remember { mutableStateOf<Bill?>(null) }
+    var billData = navController.previousBackStackEntry?.savedStateHandle?.get<Bill>("bill_data")
+
+    var status by remember { mutableStateOf("") }
+    var dot by remember { mutableIntStateOf(R.drawable.red_dot) }
+
+    var waterBill by remember { mutableIntStateOf(150) }
+    var electricalBill by remember { mutableIntStateOf(0) }
 
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
@@ -87,6 +95,23 @@ fun MemberBillDetailScreen(navController : NavHostController){
                             t.message?.let { Log.e("Error",it) }
                         }
                     )
+
+                    val waterUsage = billData?.waterUsed ?: 0
+                    waterBill = if (waterUsage > 5) 150 + ((waterUsage - 5) * 20) else 150
+                    electricalBill = (billData?.electricityUsed ?: 0) * 8
+
+                    when(billData?.statusId){
+                        OtherStatus.PENDING.code -> {
+                            status = "ค้างชำระ"
+                        }
+                        OtherStatus.EXPIRED.code -> {
+                            status = "เลยกำหนดเวลา"
+                        }
+                        OtherStatus.SUCCESS.code -> {
+                            status = "ชำระแล้ว"
+                            dot = R.drawable.green_dot
+                        }
+                    }
                 }
             }
         }
@@ -149,7 +174,7 @@ fun MemberBillDetailScreen(navController : NavHostController){
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.red_dot),
+                            painter = painterResource(id = dot),
                             contentScale = ContentScale.Fit,
                             contentDescription = null,
                             modifier = Modifier.size(14.dp)
@@ -158,7 +183,7 @@ fun MemberBillDetailScreen(navController : NavHostController){
                         Spacer(modifier = Modifier.width(5.dp))
 
                         Text(
-                            text = "ค้างชำระ",
+                            text = status,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.ExtraBold
                         )
@@ -175,14 +200,14 @@ fun MemberBillDetailScreen(navController : NavHostController){
             ) {
                 Text(
                     text = "บิลค่าเช่าห้อง",
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center
                 )
 
                 Text(
-                    text = "เดือน มกราคม 2025",
-                    fontSize = 14.sp,
+                    text = "เดือน กุมภาพันธ์ 2025",
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center
                 )
@@ -197,7 +222,7 @@ fun MemberBillDetailScreen(navController : NavHostController){
                 ) {
                     Text(
                         text = "รายการ",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(start = 10.dp)
                     )
@@ -211,7 +236,7 @@ fun MemberBillDetailScreen(navController : NavHostController){
                 ) {
                     Text(
                         text = "ค่าเช่าห้อง",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Start
@@ -219,7 +244,7 @@ fun MemberBillDetailScreen(navController : NavHostController){
 
                     Text(
                         text = "4,000",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.End
@@ -238,7 +263,7 @@ fun MemberBillDetailScreen(navController : NavHostController){
 
                     Text(
                         text = "หน่วยที่ใช้",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
@@ -246,7 +271,7 @@ fun MemberBillDetailScreen(navController : NavHostController){
 
                     Text(
                         text = "จำนวนเงิน",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.End
@@ -262,23 +287,23 @@ fun MemberBillDetailScreen(navController : NavHostController){
                 ) {
                     Text(
                         text = "ค่าไฟ",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Start
                     )
 
                     Text(
-                        text = "12",
-                        fontSize = 14.sp,
+                        text = "${billData?.electricityUsed ?: 0}",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
 
                     Text(
-                        text = "96",
-                        fontSize = 14.sp,
+                        text = "$electricalBill",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.End
@@ -294,23 +319,23 @@ fun MemberBillDetailScreen(navController : NavHostController){
                 ) {
                     Text(
                         text = "ค่าน้ำ",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Start
                     )
 
                     Text(
-                        text = "4",
-                        fontSize = 14.sp,
+                        text = "${billData?.waterUsed ?: 0}",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
 
                     Text(
-                        text = "150",
-                        fontSize = 14.sp,
+                        text = "$waterBill",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.End
@@ -326,7 +351,7 @@ fun MemberBillDetailScreen(navController : NavHostController){
                 ) {
                     Text(
                         text = "รวม",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Start
@@ -335,8 +360,8 @@ fun MemberBillDetailScreen(navController : NavHostController){
                     Spacer(modifier = Modifier.weight(1f))
 
                     Text(
-                        text = "4,246",
-                        fontSize = 14.sp,
+                        text = "${billData?.totalPrice ?: 4150}",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.End
@@ -347,33 +372,47 @@ fun MemberBillDetailScreen(navController : NavHostController){
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                val isPaid = billData?.statusId == OtherStatus.SUCCESS.code
+                val buttonText = if (isPaid) "ชำระแล้ว" else "ชำระเงิน"
+                val buttonColor = if (isPaid) Color(200, 200, 200, 255) else Color(94, 144, 255, 255)
+                val isButtonEnabled = !isPaid
+
                 Button(
                     onClick = {
-                        navController.navigate(Screen.MemberCheckBill.route)
+                        if (!isPaid) {
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "bill_data",billData
+                            )
+                            navController.navigate(Screen.MemberCheckBill.route)
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(94, 144, 255, 255),
+                        containerColor = buttonColor,
                         contentColor = Color.White
                     ),
-                    modifier = Modifier.width(226.dp).height(39.dp)
+                    modifier = Modifier.width(226.dp).height(39.dp),
+                    enabled = isButtonEnabled
                 ) {
                     Text(
-                        text = "ชำระเงิน",
-                        fontWeight = FontWeight.SemiBold
+                        text = buttonText,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 18.sp
                     )
                 }
+
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 8.dp)
                         .background(Color(217, 217, 217, 255))
                         .padding(vertical = 8.dp),
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
                         text = "หมายเหตุ",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(start = 10.dp)
                     )
@@ -387,7 +426,8 @@ fun MemberBillDetailScreen(navController : NavHostController){
                         text = "ค่าไฟหน่วยละ 8 บาท\n" +
                                 "ค่าน้ำ 5 หน่วยแรกเหมาจ่าย 150 บาท\n" +
                                 "ถ้าใช้เกินคิดเพิ่มหน่วยละ 20 บาท",
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
                         color = Color(165, 165, 165, 255)
                     )
                 }

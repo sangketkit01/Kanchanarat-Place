@@ -44,6 +44,9 @@ sealed class Screen(val route: String, val name: String, val icon: Any?){
     data object MemberBillDetail:Screen("member_bill_detail_screen","รายละเอียดบิลค่าห้อง",null)
     data object MemberCheckBill:Screen("member_check_bill_screen","จ่ายบิลค่าห้อง",null)
 
+    data object News:Screen("news_screen","ข่าวสาร",null)
+    data object NewsDetail:Screen("news_detail_screen","รายละเอียดข่าวสาร",null)
+
     data object Bills:Screen("bills_screen","บิลทั้งหมด",null)
     data object BillEdit:Screen("bill_edit_screen","แก้ไขบิล",null)
     data object ReservedList:Screen("reserved_list_screen","ลิสต์ผู้ที่จองห้อง",null)

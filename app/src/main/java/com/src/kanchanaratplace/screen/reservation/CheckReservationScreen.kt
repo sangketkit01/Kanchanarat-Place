@@ -12,12 +12,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -99,10 +103,31 @@ fun CheckReservationScreen(navController : NavHostController){
                     labelText = "ชื่อ นามสกุล"
                 )
 
-                MytextField(
+                OutlinedTextField(
                     value = phone,
-                    onValueChange = {phone = it},
-                    labelText = "เบอร์โทรศัพท์"
+                    onValueChange = { newValue->
+                        phone = newValue
+                    },
+                    label = {
+                        Text(
+                            text = "เบอร์โทรศัพท์",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(186, 184, 184, 255)
+                        )
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedLabelColor = Color.LightGray,
+                        focusedIndicatorColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.LightGray
+                    ),
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
                 Button(
@@ -130,7 +155,7 @@ fun CheckReservationScreen(navController : NavHostController){
                                 navController.navigate(Screen.Status.route)
                             },
                             onElse = {
-
+                                navController.navigate(Screen.Status.route)
                             },
                             onFailure = {t->
                                 Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
@@ -146,7 +171,8 @@ fun CheckReservationScreen(navController : NavHostController){
                         containerColor = Color(82, 146, 255),  // สีฟ้า
                         disabledContainerColor = Color(82, 146, 255).copy(alpha = 0.5f)
                     ),
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(10.dp),
+                    enabled = name.isNotEmpty() && phone.isNotEmpty()
                 ) {
                     Text(
                         text = "ตรวจสอบข้อมูล",

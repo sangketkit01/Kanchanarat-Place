@@ -77,8 +77,8 @@ fun BillEditScreen(navController : NavHostController){
 
     val billData = navController.previousBackStackEntry?.savedStateHandle?.get<Bill>("bill_data")
 
-    var waterUsed by remember { mutableStateOf(billData?.waterUsed.toString() ?: "") }
-    var electricalUsed by remember { mutableStateOf(billData?.electricityUsed.toString() ?: "") }
+    var waterUsed by remember { mutableStateOf(billData?.waterUsed?.toString() ?: "") }
+    var electricalUsed by remember { mutableStateOf(billData?.electricityUsed?.toString() ?: "") }
     var waterBill by remember { mutableIntStateOf(150) }
     var electricalBill by remember { mutableIntStateOf(0) }
 
@@ -274,7 +274,8 @@ fun BillEditScreen(navController : NavHostController){
                                 "ค่าไฟหน่วยละ 8 บาท\n" +
                                 "ค่าน้ำ 5 หน่วยแรกเหมาจ่าย 150 บาท\n" +
                                 "ถ้าใช้เกินคิดเพิ่มหน่วยละ 20 บาท",
-                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
                         color = Color(165, 165, 165, 255)
                     )
                 }

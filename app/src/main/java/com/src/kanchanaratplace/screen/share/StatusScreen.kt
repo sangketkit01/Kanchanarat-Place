@@ -14,6 +14,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +45,8 @@ fun StatusScaffold(navController: NavHostController){
 @Composable
 fun StatusScreen(navController : NavHostController){
 
-    val previousRoute = navController.previousBackStackEntry?.savedStateHandle?.get<String>("previous_route")
+    val previousRoute = navController.previousBackStackEntry?.savedStateHandle
+        ?.get<String>("previous_route")
 
     var before: String? = null
     var next : String? = null
@@ -54,13 +59,18 @@ fun StatusScreen(navController : NavHostController){
     var nextTextButton : String? = null
     var extra : Boolean = false
 
+    var error by remember { mutableStateOf(false) }
+
 
     when(previousRoute){
         Screen.PayReservation.route -> {
             before = Screen.ReservationStatus.route
             next = Screen.First.route
-            reservationId = navController.previousBackStackEntry?.savedStateHandle?.get<Int>("reservation_id")
-            title = "ชำระเงินเรียบร้อย $reservationId"
+
+            reservationId = navController.previousBackStackEntry?.savedStateHandle
+                ?.get<Int>("reservation_id")
+
+            title = "ทำรายการเรียบร้อย"
             content = "เราได้นำเนินการแจ้งหอพักเรียบร้อย\n" +
                     "รอดำเนินการในขั้นต่อไป"
             beforeTextButton = "ตรวจสอบการดำเนินการ"
@@ -70,10 +80,9 @@ fun StatusScreen(navController : NavHostController){
         Screen.ContractFeeDetail.route -> {
             before = Screen.First.route
             next = Screen.Login.route
-            title = "ชำระเงินเรียบร้อย"
-            content = "ดำเนินการเสร็จสิ้น \n" +
-                    "เจ้าของหอพักจะดำเนินการส่ง\n" +
-                    "ชื่อผู้ใช้และรหัสผ่านให้ทางไลน์"
+            title = "ทำรายการเรียบร้อย"
+            content = "ดำเนินการเสร็จสิ้น รอหอพักตรวจสอบความถูกต้อง \n" +
+                    "และดำเนินการส่งชื่อผู้ใช้และรหัสผ่านให้ทางไลน์\n"
             beforeTextButton = "กลับไปที่หน้าหลัก"
             nextTextButton = "เข้าสู่ระบบ"
             extra = true
@@ -82,14 +91,24 @@ fun StatusScreen(navController : NavHostController){
         Screen.CheckReservation.route-> {
             before = Screen.CheckReservation.route
             next = Screen.ReservationStatus.route
-            reservationId = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation_data")
-                ?.reservationId
-            title = "ดำเนินการเสร็จสิ้น $reservationId"
-            content = "พบข้อมูลการจองของท่าน\n" +
-                    "กดปุ่มไปที่หน้าขั้นตอนการดำเนินการ\n" +
-                    "เพื่อตรวจสอบสถานะการดำเนินการของท่าน"
-            beforeTextButton = "กลับไปหน้าตรวจสอบข้อมูล"
-            nextTextButton = "ไปที่หน้าขั้นตอนการดำเนินการ"
+
+            reservationId = navController.previousBackStackEntry?.savedStateHandle
+                ?.get<Reservation>("reservation_data")?.reservationId
+
+            if(reservationId == null){
+                title = "ไม่พบข้อมูลการจองของท่าน"
+                content = "กดปุ่มไปที่หน้าขั้นตอนการดำเนินการ\n" +
+                        "เพื่อตรวจสอบสถานะการดำเนินการของท่าน"
+                beforeTextButton = "กลับไปหน้าตรวจสอบข้อมูล"
+                nextTextButton = "ไปที่หน้าขั้นตอนการดำเนินการ"
+                error = true
+            }else{
+                title = "พบข้อมูลการจองของท่าน"
+                content = "กดปุ่มไปที่หน้าขั้นตอนการดำเนินการ\n" +
+                        "เพื่อตรวจสอบสถานะการดำเนินการของท่าน"
+                beforeTextButton = "กลับไปหน้าตรวจสอบข้อมูล"
+                nextTextButton = "ไปที่หน้าขั้นตอนการดำเนินการ"
+            }
         }
     }
 
@@ -107,7 +126,8 @@ fun StatusScreen(navController : NavHostController){
         CardStatus(
             status = "Successful",
             title = title ?: "",
-            content = content ?: ""
+            content = content ?: "",
+            error
         )
 
         if(extra){
@@ -150,17 +170,20 @@ fun StatusScreen(navController : NavHostController){
             Spacer(modifier = Modifier.height(10.dp))
 
 
-            BlueWhiteButton(
-                text = nextTextButton ?: "",
-                onClick = {
-                    if (next != null) {
-                        navController.currentBackStackEntry?.savedStateHandle?.set(
-                            "reservation_id" , reservationId
-                        )
-                        navController.navigate(next)
+            if(!error){
+                BlueWhiteButton(
+                    text = nextTextButton ?: "",
+                    onClick = {
+                        if (next != null) {
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "reservation_id" , reservationId
+                            )
+                            navController.navigate(next)
+                        }
                     }
-                }
-            )
+                )
+            }
+
         }
 
         Spacer(modifier = Modifier.height(40.dp))

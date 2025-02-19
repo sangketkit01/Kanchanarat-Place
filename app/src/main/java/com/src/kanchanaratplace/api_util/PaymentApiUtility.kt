@@ -5,6 +5,7 @@ import com.src.kanchanaratplace.api.RoomAPI
 import com.src.kanchanaratplace.data.Bill
 import com.src.kanchanaratplace.data.BillRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -23,11 +24,33 @@ fun createBillUtility(
     PaymentClient.instance.createBill(bill).enqueueCallback(onResponse,onElse, onFailure)
 }
 
-fun getBill(
+fun getBillUtility(
     roomId : Int, month : Int, year : Int, onResponse: (Bill) -> Unit,
     onElse: (Response<Bill>) -> Unit, onFailure: (Throwable) -> Unit
 ){
     PaymentClient.instance.getBill(roomId,month,year).enqueueCallback(onResponse,onElse,onFailure)
+}
+
+fun getLatestBillUtility(
+    roomId: Int , onResponse: (Bill) -> Unit,
+    onElse: (Response<Bill>) -> Unit,onFailure: (Throwable) -> Unit
+){
+    PaymentClient.instance.getLatestBill(roomId).enqueueCallback(onResponse,onElse,onFailure)
+}
+
+fun getRoomBillsUtility(
+    roomId : Int, onResponse: (List<Bill>) -> Unit,
+    onElse: (Response<List<Bill>>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    PaymentClient.instance.getRoomBills(roomId).enqueueCallback(onResponse,onElse,onFailure)
+}
+
+fun payBillUtility(
+    billId : Int, slipPath : MultipartBody.Part,
+    onResponse: (ResponseBody) -> Unit, onElse: (Response<ResponseBody>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    PaymentClient.instance.payBill(billId,slipPath).enqueueCallback(onResponse,onElse,onFailure)
 }
 
 private fun String.toRequestBody() = this.toRequestBody("text/plain".toMediaTypeOrNull())

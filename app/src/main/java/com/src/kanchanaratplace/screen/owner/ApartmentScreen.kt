@@ -76,13 +76,16 @@ fun ApartmentScreen(navController : NavHostController){
                         .clickable {
 
                         },
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
                 ){
                     Text(
                         text = "จัดการห้องพัก",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
                 Column (
@@ -92,13 +95,16 @@ fun ApartmentScreen(navController : NavHostController){
                         .clickable {
                             navController.navigate(Screen.Bills.route)
                         },
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
                 ){
                     Text(
                         text = "แจ้งชำระค่าบริการ",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
@@ -129,13 +135,16 @@ fun ApartmentScreen(navController : NavHostController){
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.White)
                         .clickable {  },
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
                 ){
                     Text(
                         text = "จัดการห้องพัก",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
                 Column (
@@ -143,13 +152,16 @@ fun ApartmentScreen(navController : NavHostController){
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.White)
                         .clickable {  },
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
                 ){
                     Text(
                         text = "แจ้งชำระค่าบริการ",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
@@ -182,13 +194,16 @@ fun ApartmentScreen(navController : NavHostController){
                         .clickable {
                             navController.navigate(Screen.ReservedList.route)
                         },
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
                 ){
                     Text(
                         text = "ดูการจอง",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
                 Column (
@@ -196,13 +211,16 @@ fun ApartmentScreen(navController : NavHostController){
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.White)
                         .clickable {  },
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
                 ){
                     Text(
                         text = "แจ้งชำระค่าบริการ",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

@@ -70,7 +70,7 @@ interface RoomAPI {
     @Multipart
     @POST("insert-contract")
     fun insertContract(
-        @Part("room_id") roomId: RequestBody,
+        @Part("room_id") roomId: RequestBody ,
         @Part("reservation_id") reservationId: RequestBody,
         @Part("contract_detail") contractDetail: RequestBody,
         @Part("contract_length_month") contractLength: RequestBody,
