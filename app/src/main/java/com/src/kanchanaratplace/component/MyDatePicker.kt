@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Calendar
@@ -37,22 +38,27 @@ fun MyDatePicker(
     var expandedMonth by remember { mutableStateOf(false) }
     var expandedYear by remember { mutableStateOf(false) }
 
+    var selectedMonth by remember { mutableStateOf(months[selectedMonthIndex - 1]) }
+    var selectedYear by remember { mutableStateOf("${currentYear + 543}") }
+
     Row(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "${months[selectedMonthIndex - 1]}/${selectedYearCE + 543}",
+            text = "เดือน/ปี",
             modifier = Modifier.weight(1f),
-            fontSize = 18.sp
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold
         )
 
         Column {
             Box(modifier = Modifier.clickable { expandedMonth = true }) {
-                Text(text = "เลือกเดือน ▼", modifier = Modifier.padding(8.dp))
+                Text(text = "$selectedMonth ▼", modifier = Modifier.padding(8.dp))
                 DropdownMenu(expanded = expandedMonth, onDismissRequest = { expandedMonth = false }) {
                     months.forEachIndexed { index, month ->
                         DropdownMenuItem(text = { Text(month) }, onClick = {
+                            selectedMonth = month
                             onMonthSelected(index + 1)
                             expandedMonth = false
                         })
@@ -60,10 +66,11 @@ fun MyDatePicker(
                 }
             }
             Box(modifier = Modifier.clickable { expandedYear = true }) {
-                Text(text = "เลือกปี ▼", modifier = Modifier.padding(8.dp))
+                Text(text = "$selectedYear ▼", modifier = Modifier.padding(8.dp))
                 DropdownMenu(expanded = expandedYear, onDismissRequest = { expandedYear = false }) {
                     years.forEach { year ->
                         DropdownMenuItem(text = { Text((year + 543).toString()) }, onClick = {
+                            selectedYear = (year + 543).toString()
                             onYearSelected(year)
                             expandedYear = false
                         })

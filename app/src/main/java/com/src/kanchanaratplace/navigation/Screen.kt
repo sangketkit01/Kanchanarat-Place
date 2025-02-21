@@ -47,9 +47,14 @@ sealed class Screen(val route: String, val name: String, val icon: Any?){
     data object News:Screen("news_screen","ข่าวสาร",null)
     data object NewsDetail:Screen("news_detail_screen","รายละเอียดข่าวสาร",null)
 
-    data object Bills:Screen("bills_screen","บิลทั้งหมด",null)
+    data object HomeAdmin:Screen("home_admin_screen","หน้าหลัก",R.drawable.home)
+    data object ProfileAdmin:Screen("profile_admin_screen","โปรไฟล์",R.drawable.profile_icon)
+
+    data object MemberDataList:Screen("member_data_list_screen","ข้อมูลผู้เช่า",null)
+
+    data object Bills:Screen("bills_screen","ค่าบริการ",R.drawable.admin_bill_menu)
     data object BillEdit:Screen("bill_edit_screen","แก้ไขบิล",null)
-    data object ReservedList:Screen("reserved_list_screen","ลิสต์ผู้ที่จองห้อง",null)
+    data object ReservedList:Screen("reserved_list_screen","การจอง",R.drawable.admin_reservation_menu)
     data object ReservedDetail:Screen("reserved_detail_screen","รายละเอียดของการจอง",null)
     data object ContractList:Screen("contract_list_screen","ลิสต์สัญญาใหม่",null)
     data object ContractDetail:Screen("contract_detail_screen","รายละเอียดการทำสัญญา",null)

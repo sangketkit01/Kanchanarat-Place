@@ -3,6 +3,7 @@ package com.src.kanchanaratplace.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,6 +28,9 @@ import com.src.kanchanaratplace.screen.owner.BillEditScaffold
 import com.src.kanchanaratplace.screen.owner.BillsScaffold
 import com.src.kanchanaratplace.screen.owner.ContractDetailScaffold
 import com.src.kanchanaratplace.screen.owner.ContractListScaffold
+import com.src.kanchanaratplace.screen.owner.HomeAdminScaffold
+import com.src.kanchanaratplace.screen.owner.MemberDataListScaffold
+import com.src.kanchanaratplace.screen.owner.ProfileAdminScaffold
 import com.src.kanchanaratplace.screen.owner.ReservedDetailScaffold
 import com.src.kanchanaratplace.screen.owner.ReservedListScaffold
 import com.src.kanchanaratplace.screen.reservation.AvailableRoomScaffold
@@ -38,13 +42,19 @@ import com.src.kanchanaratplace.screen.reservation.ReservationScaffold
 import com.src.kanchanaratplace.screen.reservation.ReservationStatusScaffold
 import com.src.kanchanaratplace.screen.share.QrCodeScaffold
 import com.src.kanchanaratplace.screen.share.StatusScaffold
+import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import com.src.kanchanaratplace.status.Role
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(navController: NavHostController) {
+    val context = LocalContext.current
+    val sharePreferences = MemberSharePreferencesManager(context)
     NavHost(
         navController = navController,
-        startDestination = Screen.First.route
+        startDestination =
+            if(sharePreferences.member?.roleId == Role.OWNER.code) Screen.HomeAdmin.route
+            else Screen.First.route
     ) {
         composable(Screen.Login.route) {
             LoginScaffold(navController)
@@ -172,6 +182,18 @@ fun NavGraph(navController: NavHostController) {
 
         composable(Screen.NewsDetail.route) {
             NewsDetailScaffold(navController)
+        }
+
+        composable(Screen.HomeAdmin.route) {
+            HomeAdminScaffold(navController)
+        }
+
+        composable(Screen.ProfileAdmin.route) {
+            ProfileAdminScaffold(navController)
+        }
+
+        composable(Screen.MemberDataList.route) {
+            MemberDataListScaffold(navController)
         }
     }
 }

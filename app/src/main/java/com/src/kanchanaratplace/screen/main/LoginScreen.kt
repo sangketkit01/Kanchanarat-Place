@@ -53,6 +53,7 @@ import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.data.Member
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
+import com.src.kanchanaratplace.status.Role
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -230,7 +231,11 @@ fun LoginScreen(navController : NavHostController){
                                         sharePreferences.loggedIn = true
                                         sharePreferences.member = response.body()!!
 
-                                        navController.navigate(Screen.First.route)
+                                        if(sharePreferences.member?.roleId == Role.OWNER.code){
+                                            navController.navigate(Screen.HomeAdmin.route)
+                                        }else{
+                                            navController.navigate(Screen.First.route)
+                                        }
                                     }else{
                                         Toast.makeText(context,"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",Toast.LENGTH_SHORT)
                                             .show()

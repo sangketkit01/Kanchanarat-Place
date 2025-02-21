@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
@@ -107,7 +108,8 @@ fun BottomBar(navController : NavHostController){
 
 @Composable
 fun AdminBottomBar(navController: NavHostController){
-    val navigationItems = listOf(Screen.First,Screen.Apartment,Screen.Chat,Screen.Profile,Screen.Notification)
+    val navigationItems = listOf(Screen.HomeAdmin,Screen.ReservedList,Screen.Bills,
+        Screen.Profile,Screen.ProfileAdmin)
     var selectedScreen by remember { mutableIntStateOf(0) }
 
     val context = LocalContext.current.applicationContext
@@ -135,7 +137,8 @@ fun AdminBottomBar(navController: NavHostController){
                         is ImageVector -> Icon(
                             imageVector = screen.icon,
                             contentDescription = null,
-                            modifier = Modifier.size(33.dp)
+                            modifier = Modifier.size(33.dp),
+                            tint = Color.White
                         )
                     }
                 },
@@ -143,7 +146,8 @@ fun AdminBottomBar(navController: NavHostController){
                     Text(
                         text = screen.name,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = Color.White,
+                        textAlign = TextAlign.Center
                     )
                 },
                 selected = false,
