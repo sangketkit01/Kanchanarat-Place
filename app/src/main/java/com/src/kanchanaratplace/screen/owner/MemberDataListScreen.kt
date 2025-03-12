@@ -39,6 +39,7 @@ import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.component.SmallWhiteBlueButton
+import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
 fun MemberDataListScaffold(navController: NavHostController){
@@ -193,7 +194,7 @@ fun MemberDataListScreen(navController : NavHostController){
 
                     Button(
                         onClick = {
-
+                            navController.navigate(Screen.MemberDataDetail.route)
                         },
                         shape = CircleShape,
                         border = BorderStroke(

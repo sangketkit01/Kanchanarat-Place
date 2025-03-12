@@ -1,10 +1,13 @@
 package com.src.kanchanaratplace.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import java.sql.Timestamp
 import java.util.Date
 
+@Parcelize
 data class Member(
     @Expose
     @SerializedName("member_id") val memberId : Int,
@@ -47,5 +50,5 @@ data class Member(
 
     @Expose
     @SerializedName("updated_at") val updatedAt : Timestamp
-)
+) : Parcelable
 

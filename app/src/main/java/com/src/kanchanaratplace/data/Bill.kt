@@ -16,11 +16,22 @@ data class Bill(
     @SerializedName("room_id") val roomId : Int,
 
     @Expose
+    @SerializedName("previous_water_used") val previousWaterUsed : Int,
+
+    @Expose
+    @SerializedName("previous_electricity_used") val previousElectricityUsed : Int,
+
+    @Expose
+    @SerializedName("current_water_used") val currentWaterUsed : Int,
+
+    @Expose
+    @SerializedName("current_electricity_used") val currentElectricityUsed : Int,
+
+    @Expose
     @SerializedName("water_used") val waterUsed : Int,
 
     @Expose
     @SerializedName("electricity_used") val electricityUsed : Int,
-
 
     @Expose
     @SerializedName("total_price") val totalPrice : Int,

@@ -65,6 +65,11 @@ fun ContractFeeDetailScreen(navController : NavHostController){
         )
 
         navController.currentBackStackEntry?.savedStateHandle?.set(
+            "contract_path",
+            navController.previousBackStackEntry?.savedStateHandle?.get<String>("contract_path")
+        )
+
+        navController.currentBackStackEntry?.savedStateHandle?.set(
             "previous_route" , Screen.ContractFeeDetail.route
         )
 

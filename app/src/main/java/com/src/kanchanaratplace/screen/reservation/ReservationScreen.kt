@@ -1,7 +1,9 @@
 package com.src.kanchanaratplace.screen.reservation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -19,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,10 +39,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.component.SmallWhiteBlueButton
 import com.src.kanchanaratplace.api.RoomAPI
 import com.src.kanchanaratplace.api_util.getRoomUtility
@@ -175,19 +183,13 @@ fun ReservationScreen(navController: NavHostController) {
             else -> LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalArrangement = Arrangement.spacedBy(15.dp),
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp,
-                    bottom = 40.dp
-                )
+                verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 items(roomList) { room ->
                     val roomColor = when (room.status) {
-                        com.src.kanchanaratplace.status.RoomStatus.ROOM_AVAILABLE.message -> Color(50, 161, 41, 255)
-                        com.src.kanchanaratplace.status.RoomStatus.ROOM_OCCUPIED.message  -> Color(251, 35, 35, 255)
-                        com.src.kanchanaratplace.status.RoomStatus.ROOM_RESERVED.message  -> Color(217, 217, 217, 255)
+                        com.src.kanchanaratplace.status.RoomStatus.ROOM_AVAILABLE.status -> Color(50, 161, 41, 255)
+                        com.src.kanchanaratplace.status.RoomStatus.ROOM_OCCUPIED.status  -> Color(251, 35, 35, 255)
+                        com.src.kanchanaratplace.status.RoomStatus.ROOM_RESERVED.status  -> Color(217, 217, 217, 255)
                         else -> Color.Gray
                     }
                     RoomStatusItem(
@@ -227,34 +229,64 @@ fun RoomStatusItem(roomId : Int,room: RoomStatus, selectedRoom : String, onSelec
             ).padding(10.dp)
         )
 
-        Button(
-            onClick = {
-                onSelected(room.number)
-                navController.currentBackStackEntry?.savedStateHandle?.set(
-                    "room",room.number
-                )
-                navController.currentBackStackEntry?.savedStateHandle?.set(
-                    "room_id",roomId
-                )
+        Card (
+            modifier = Modifier.size(130.dp)
+                .clickable (enabled = room.status == "ว่าง"){
+                    onSelected(room.number)
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "room",room.number
+                    )
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "room_id",roomId
+                    )
 
-                navController.navigate(Screen.MakeReservation.route)
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = room.color,
-                disabledContainerColor = room.color
+                    navController.navigate(Screen.MakeReservation.route)
+                },
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
             ),
             shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .width(104.dp)
-                .height(102.dp),
-            enabled = room.status == "ว่าง"
-        ) {
-            Text(
-                text = room.status,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black
-            )
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+        ){
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                if(room.status == "ไม่ว่าง"){
+                    Image(
+                        painter = painterResource(R.drawable.maiwang),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.size(60.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    Text(
+                        text = "ไม่ว่าง",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }else if(room.status == "ว่าง"){
+                    Text(
+                        text = "ว่าง",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFB2323)
+                    )
+                }else{
+                    Text(
+                        text = "จอง",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFF8000)
+                    )
+                }
+            }
         }
 
     }

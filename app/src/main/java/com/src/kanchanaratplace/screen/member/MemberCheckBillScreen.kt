@@ -97,7 +97,7 @@ fun MemberCheckBillScreen(navController : NavHostController){
                         },
                         onFailure = { t->
                             Toast.makeText(context,"Error Check LogCat", Toast.LENGTH_SHORT).show()
-                            t.message?.let { Log.e("Error",it) }
+                            t.message?.let {it2-> Log.e("Error",it2) }
                         }
                     )
                 }
@@ -260,7 +260,10 @@ fun MemberCheckBillScreen(navController : NavHostController){
                                 Toast.makeText(context, "ส่งบิลสำเร็จ รอดำเนินการ",
                                     Toast.LENGTH_SHORT).show()
 
-                                navController.navigate(Screen.MemberApartment.route)
+                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                    "previous_route" , Screen.MemberCheckBill.route
+                                )
+                                navController.navigate(Screen.Status.route)
                             },
                             onElse = { response->
                                 Toast.makeText(context, "เกิดข้อผิดพลาด ส่งบิลไม่สำเร็จ",

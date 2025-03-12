@@ -104,40 +104,24 @@ fun MakeReservationScreen(navController : NavHostController){
             )
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(20.dp)
             ) {
                 Text(
-                    text = "สรุปการจอง",
+                    text = "สรุปการจองค่าใช้จ่ายที่ต้องชำระ",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "ราคาห้อง", fontSize = 16.sp)
-                    Text(text = "4,000 บาท", fontSize = 16.sp)
-                }
+                Spacer(modifier = Modifier.height(15.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(text = "เงินมัดจำ/ประกัน", fontSize = 16.sp)
-                    Text(text = "4,000 บาท", fontSize = 16.sp)
+                    Text(text = "1,000 บาท", fontSize = 16.sp)
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "จ่ายล่วงหน้า", fontSize = 16.sp)
-                    Text(text = "4,000 บาท", fontSize = 16.sp)
-                }
-
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -149,7 +133,7 @@ fun MakeReservationScreen(navController : NavHostController){
                         fontSize = 16.sp
                     )
                     Text(
-                        text = "12,000 บาท",
+                        text = "1,000 บาท",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )

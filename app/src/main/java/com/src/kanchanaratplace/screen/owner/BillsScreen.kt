@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.api_util.getBillUtility
 import com.src.kanchanaratplace.api_util.getRoomUtility
+import com.src.kanchanaratplace.api_util.releaseBillUtility
 import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.component.FloorSelection
 import com.src.kanchanaratplace.component.MyDatePicker
@@ -86,6 +88,9 @@ fun BillsScreen(navController : NavHostController){
 
     val context = LocalContext.current
 
+    var isNeedToCreateBill by  remember { mutableStateOf(false) }
+    var releaseAlert by remember { mutableStateOf(false) }
+
     val billDataMap = remember { mutableStateMapOf<Int, Bill?>() }
     LaunchedEffect(selectedFloor) {
         getRoomUtility(
@@ -112,10 +117,10 @@ fun BillsScreen(navController : NavHostController){
                 }
             },
             onElse = {
-                Toast.makeText(context,"เกิดข้อผิดพลาดในการโหลดข้อมูล",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "เกิดข้อผิดพลาดในการโหลดข้อมูล", Toast.LENGTH_SHORT).show()
             },
-            onFailure = { t->
-                Toast.makeText(context,"Error Check LogCat",Toast.LENGTH_SHORT).show()
+            onFailure = { t ->
+                Toast.makeText(context, "Error Check LogCat", Toast.LENGTH_SHORT).show()
                 t.message?.let { Log.e("Error", t.message!!) }
             }
         )
@@ -179,8 +184,43 @@ fun BillsScreen(navController : NavHostController){
             }
         }
 
+        Button(
+            onClick = {
+                if(isNeedToCreateBill){
+                    navController.navigate(Screen.Meter.route)
+                }else{
+                    releaseAlert = true
+                }
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                contentColor = Color.White,
+                containerColor = Color(0xFF5E90FF)
+            ),
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(end = 15.dp)
+        ) {
+            Text(
+                text = "สร้างใบบิลสำหรับทุกห้อง",
+                fontWeight = FontWeight.Bold
+            )
+        }
+
         roomList.forEach { room ->
             val billData = billDataMap[room.roomId]
+
+            if(billData != null){
+                if (room.status == "ไม่ว่าง" &&
+                    (billData.currentWaterUsed == 0 || billData.currentElectricityUsed == 0)) {
+
+                    Log.e("Error","${room.code} , ${billData.currentWaterUsed} , ${billData.currentElectricityUsed}")
+                    isNeedToCreateBill = true
+
+                }
+
+                Log.e("Data", billData.toString())
+            }
 
             Card(
                 modifier = Modifier
@@ -235,7 +275,7 @@ fun BillsScreen(navController : NavHostController){
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "ค่าไฟ",
+                            text = "หน่วยไฟที่ใช้",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color(112, 110, 110, 255)
@@ -246,6 +286,19 @@ fun BillsScreen(navController : NavHostController){
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
+                    }
+
+                    val totalPrice = if (billData != null) {
+                        val waterUsed = billData.waterUsed ?: 0
+                        val electricityUsed = billData.electricityUsed ?: 0
+
+                        val extraWaterUnits = waterUsed - 5
+                        val waterPrice = if (extraWaterUnits > 0) 150 + extraWaterUnits * 20 else 150
+                        val electricityPrice = electricityUsed * 8
+
+                        waterPrice + electricityPrice + 4000
+                    } else {
+                        null
                     }
 
                     Column(
@@ -259,7 +312,7 @@ fun BillsScreen(navController : NavHostController){
                         )
 
                         Text(
-                            text = "${billData?.totalPrice ?: "-"}",
+                            text = totalPrice?.toString() ?: "-",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -279,21 +332,21 @@ fun BillsScreen(navController : NavHostController){
                             .width(72.dp)
                             .height(58.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (room.status == RoomStatus.ROOM_OCCUPIED.message) {
+                            containerColor = if (room.status == RoomStatus.ROOM_OCCUPIED.status) {
                                 Color(172, 198, 255, 255)
                             } else {
                                 Color(240, 240, 240, 255)
                             },
-                            contentColor = if (room.status == RoomStatus.ROOM_OCCUPIED.message) {
+                            contentColor = if (room.status == RoomStatus.ROOM_OCCUPIED.status) {
                                 Color(94, 144, 255, 255)
                             } else {
                                 Color(112, 110, 110, 255)
                             }
                         ),
                         shape = RoundedCornerShape(10.dp),
-                        enabled = room.status == RoomStatus.ROOM_OCCUPIED.message
+                        enabled = room.status == RoomStatus.ROOM_OCCUPIED.status
                     ) {
-                        if (room.status == RoomStatus.ROOM_OCCUPIED.message) {
+                        if (room.status == RoomStatus.ROOM_OCCUPIED.status) {
                             if (billData != null) {
                                 Text(
                                     text = "แก้\n" +
@@ -323,7 +376,51 @@ fun BillsScreen(navController : NavHostController){
                 }
             }
         }
+    }
 
-
+    if(releaseAlert){
+        AlertDialog(
+            onDismissRequest = {releaseAlert = false},
+            title = { Text("ยืนยัน") },
+            text = { Text("ยืนยันการสร้างและส่งใบบิลให้ทุกห้องหรือไม่") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        releaseBillUtility(
+                            selectedMonthIndex,
+                            selectedYearCE,
+                            onResponse = {
+                                Toast.makeText(context,"Send bill successfully",Toast.LENGTH_SHORT)
+                                    .show()
+                                navController.navigate(Screen.Bills.route){
+                                    popUpTo(Screen.Bills.route) { inclusive = true }
+                                }
+                            },
+                            onElse = { elseResponse->
+                                Toast.makeText(context,"Send bill failed",Toast.LENGTH_SHORT)
+                                    .show()
+                                Log.e("Error",elseResponse.message())
+                            },
+                            onFailure = { t->
+                                Toast.makeText(context,"Error onFailure",Toast.LENGTH_SHORT)
+                                    .show()
+                                Log.e("Error",t.message ?: "No message")
+                            }
+                        )
+                    }
+                ){
+                    Text("ยืนยัน")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        releaseAlert = false
+                    }
+                ){
+                    Text("ยกเลิก")
+                }
+            }
+        )
     }
 }

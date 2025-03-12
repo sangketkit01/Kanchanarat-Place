@@ -32,7 +32,7 @@ fun BaseScaffold(navController : NavHostController , content : @Composable () ->
             }
         },
         bottomBar = {
-            if(sharePreferences.member?.roleId == Role.OWNER.code){
+            if(sharePreferences.member?.roleId == Role.OWNER.id){
                 AdminBottomBar(navController)
             }else{
                 BottomBar(navController)

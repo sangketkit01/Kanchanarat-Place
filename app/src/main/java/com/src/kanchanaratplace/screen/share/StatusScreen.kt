@@ -110,6 +110,14 @@ fun StatusScreen(navController : NavHostController){
                 nextTextButton = "ไปที่หน้าขั้นตอนการดำเนินการ"
             }
         }
+
+        Screen.MemberCheckBill.route ->{
+            next = Screen.MemberApartment.route
+            title = "ทำรายการสำเร็จ"
+            content = "เราได้นำเนินการแจ้งหอพักเรียบร้อย\n" +
+                    "รอดำเนินการในขั้นต่อไป"
+            nextTextButton = "กลับไปหน้าหลัก"
+        }
     }
 
     val scrollState = rememberScrollState()
@@ -158,30 +166,30 @@ fun StatusScreen(navController : NavHostController){
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            WhiteBlueButton(
-                text = beforeTextButton ?: "",
-                onClick = {
-                    if (before != null) {
+            if (before != null){
+                WhiteBlueButton(
+                    text = beforeTextButton ?: "",
+                    onClick = {
                         navController.navigate(before)
                     }
-                }
-            )
+                )
+            }
 
             Spacer(modifier = Modifier.height(10.dp))
 
 
             if(!error){
-                BlueWhiteButton(
-                    text = nextTextButton ?: "",
-                    onClick = {
-                        if (next != null) {
-                            navController.currentBackStackEntry?.savedStateHandle?.set(
-                                "reservation_id" , reservationId
-                            )
-                            navController.navigate(next)
+                if(next != null){
+                    BlueWhiteButton(
+                        text = nextTextButton ?: "",
+                        onClick = {
+                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                    "reservation_id" , reservationId
+                                )
+                                navController.navigate(next)
                         }
-                    }
-                )
+                    )
+                }
             }
 
         }

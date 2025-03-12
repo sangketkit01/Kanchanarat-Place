@@ -110,31 +110,6 @@ fun ReservedListScreen(navController : NavHostController){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(240, 240, 240))
-        ) {
-            ButtonWithBadge(
-                text = "อนุมัติการจอง",
-                badgeCount = reservedList.size,
-                modifier = Modifier.weight(1f),
-                background = Color.White,
-                onClick = {
-                    navController.navigate(Screen.ReservedList.route)
-                }
-            )
-            ButtonWithBadge(
-                text = "ทำสัญญา",
-                badgeCount = 1,
-                modifier = Modifier.weight(1f),
-                background = Color(240, 240, 240, 255),
-                onClick = {
-                    navController.navigate(Screen.ContractList.route)
-                }
-            )
-        }
-
         reservedList.forEach { data->
             var room by remember { mutableStateOf<DefaultRooms?>(null) }
             getOneRoomUtility(

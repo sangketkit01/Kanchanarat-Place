@@ -82,8 +82,8 @@ fun ReservationStatusScreen(navController : NavHostController){
                         onResponse = { response->
                             val statusId : Int = response.statusId
                             currentStep = when(statusId){
-                                OtherStatus.PENDING.code -> {2}
-                                OtherStatus.APPROVED.code -> {3}
+                                OtherStatus.PENDING.id -> {2}
+                                OtherStatus.APPROVED.id -> {3}
                                 else -> {1}
                             }
                             reservedData = response
@@ -136,12 +136,12 @@ fun ReservationStatusScreen(navController : NavHostController){
         ){
             if(currentStep == 3){
                 WhiteBlueButton(
-                    text = "ดำเนินการทำสัญญา",
+                    text = "ดาวน์โหลดใบทำสัญญา",
                     onClick = {
                         navController.currentBackStackEntry?.savedStateHandle?.set(
                             "reservation_data",reservedData
                         )
-                        navController.navigate(Screen.ContractFee.route)
+                        navController.navigate(Screen.ContractPaper.route)
                     }
                 )
             }

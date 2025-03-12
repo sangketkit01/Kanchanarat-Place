@@ -24,6 +24,31 @@ fun createBillUtility(
     PaymentClient.instance.createBill(bill).enqueueCallback(onResponse,onElse, onFailure)
 }
 
+fun createWaterBillUtility(
+    roomId: Int, previousWaterUsed : Int, currentWaterUsed : Int,
+    waterUsed : Int, date : String, onResponse: (ResponseBody) -> Unit,
+    onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    PaymentClient.instance.createWaterBill(roomId, previousWaterUsed, currentWaterUsed, waterUsed, date)
+        .enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun createElectricityBillUtility(
+    roomId: Int, previousElectricityUsed : Int, currentElectricityUsed : Int,
+    electricityUsed : Int, date : String, onResponse: (ResponseBody) -> Unit,
+    onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    PaymentClient.instance.createElectricityBill(roomId,previousElectricityUsed,currentElectricityUsed,
+        electricityUsed,date).enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun releaseBillUtility(
+    month : Int, year : Int, onResponse: (ResponseBody) -> Unit,
+    onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    PaymentClient.instance.releaseBill(month, year).enqueueCallback(onResponse, onElse, onFailure)
+}
+
 fun getBillUtility(
     roomId : Int, month : Int, year : Int, onResponse: (Bill) -> Unit,
     onElse: (Response<Bill>) -> Unit, onFailure: (Throwable) -> Unit
@@ -51,6 +76,13 @@ fun payBillUtility(
     onFailure: (Throwable) -> Unit
 ){
     PaymentClient.instance.payBill(billId,slipPath).enqueueCallback(onResponse,onElse,onFailure)
+}
+
+fun approveBillUtility(
+    billId: Int, onResponse: (ResponseBody) -> Unit,
+    onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    PaymentClient.instance.approveBill(billId).enqueueCallback(onResponse, onElse, onFailure)
 }
 
 private fun String.toRequestBody() = this.toRequestBody("text/plain".toMediaTypeOrNull())

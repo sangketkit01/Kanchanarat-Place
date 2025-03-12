@@ -30,7 +30,7 @@ fun SampleScaffold(navController : NavHostController,title : String ,content : @
             SampleTopAppBar(navController,title)
         },
         bottomBar = {
-            if(sharePreferences.member?.roleId == Role.OWNER.code){
+            if(sharePreferences.member?.roleId == Role.OWNER.id){
                 AdminBottomBar(navController)
             }else{
                 BottomBar(navController)
@@ -66,7 +66,7 @@ fun SampleActionScaffold(navController: NavHostController , title: String,
             )
         },
         bottomBar = {
-            if(sharePreferences.member?.roleId == Role.OWNER.code){
+            if(sharePreferences.member?.roleId == Role.OWNER.id){
                 AdminBottomBar(navController)
             }else{
                 BottomBar(navController)

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.component.BaseScaffold
+import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
 fun ProfileScaffold(navController : NavHostController){
@@ -57,7 +58,7 @@ fun ProfileScreen(navHostController: NavHostController){
             modifier = Modifier.fillMaxWidth()
                 .padding(10.dp)
                 .clickable {
-                    Toast.makeText(context,"Hello",Toast.LENGTH_SHORT).show()
+                    navHostController.navigate(Screen.EditProfile.route)
                 },
             shape = RoundedCornerShape(10.dp),
             border = BorderStroke(1.dp, Color.LightGray),

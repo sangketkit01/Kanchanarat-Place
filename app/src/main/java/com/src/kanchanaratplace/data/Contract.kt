@@ -24,6 +24,9 @@ data class Contract(
     @SerializedName("contract_length_month") val contractLength : Int,
 
     @Expose
+    @SerializedName("contract_path") val contractPath : String,
+
+    @Expose
     @SerializedName("slip_path") val slipPath : String,
 
     @Expose

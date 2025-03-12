@@ -108,7 +108,7 @@ fun BottomBar(navController : NavHostController){
 
 @Composable
 fun AdminBottomBar(navController: NavHostController){
-    val navigationItems = listOf(Screen.HomeAdmin,Screen.ReservedList,Screen.Bills,
+    val navigationItems = listOf(Screen.HomeAdmin,Screen.Meter,Screen.Bills,
         Screen.Profile,Screen.ProfileAdmin)
     var selectedScreen by remember { mutableIntStateOf(0) }
 
@@ -154,7 +154,7 @@ fun AdminBottomBar(navController: NavHostController){
                 onClick = {
                     if(screen.route != Screen.First.route && !sharePreferences.loggedIn){
                         alertDialog = true
-                    }else if (screen.route == Screen.Apartment.route && sharePreferences.member?.roleId != Role.OWNER.code){
+                    }else if (screen.route == Screen.Apartment.route && sharePreferences.member?.roleId != Role.OWNER.id){
                         notAuthorizedAlert = true
                     }
                     else{

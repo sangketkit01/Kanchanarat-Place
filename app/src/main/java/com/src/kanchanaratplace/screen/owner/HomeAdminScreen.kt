@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,14 +58,28 @@ fun HomeAdminScaffold(navController: NavHostController){
 fun HomeAdminScreen(navController : NavHostController){
     val scrollState = rememberScrollState()
 
-    val menuList = listOf<AdminHomeMenu>(
-        AdminHomeMenu(R.drawable.admin_bed,"ห้องพักทั้งหมด",Screen.HomeAdmin.route),
-        AdminHomeMenu(R.drawable.admin_bed,"จัดการห้องพัก",Screen.HomeAdmin.route),
-        AdminHomeMenu(R.drawable.admin_booking,"แจ้งซ่อม",Screen.HomeAdmin.route),
-        AdminHomeMenu(R.drawable.admin_person,"สัญญาหอ",Screen.HomeAdmin.route),
-        AdminHomeMenu(R.drawable.admin_money,"สรุปยอด",Screen.HomeAdmin.route),
-        AdminHomeMenu(R.drawable.admin_money,"แดชบอร์ด",Screen.HomeAdmin.route),
-        AdminHomeMenu(R.drawable.admin_money,"สถานะชำระเงิน",Screen.HomeAdmin.route)
+    val repairList = listOf<AdminHomeMenu>(
+        AdminHomeMenu(R.drawable.repair_admin , "แจ้งซ่อม",Screen.RepairList.route),
+        AdminHomeMenu(R.drawable.pending_repair,"กำลังดำเนินการ",Screen.RepairPending.route),
+        AdminHomeMenu(R.drawable.success_repair,"ซ่อมแล้ว",Screen.RepairSuccess.route)
+    )
+
+    val contractList = listOf<AdminHomeMenu>(
+        AdminHomeMenu(R.drawable.approve_reservation , "อนุมัติการจอง",Screen.ReservedList.route),
+        AdminHomeMenu(R.drawable.contract,"ทำสัญญา",Screen.ContractList.route),
+        AdminHomeMenu(R.drawable.leaving_form,"คำขอย้าย",Screen.LeavingList.route)
+    )
+
+    val otherFirstLine = listOf<AdminHomeMenu>(
+        AdminHomeMenu(R.drawable.check_payment,"การชำระเงิน",Screen.CheckMemberPayment.route),
+        AdminHomeMenu(R.drawable.revenue,"สรุปยอด",""),
+        AdminHomeMenu(R.drawable.dashboard,"แดชบอร์ด",""),
+    )
+
+    val otherSecondLine = listOf<AdminHomeMenu>(
+        AdminHomeMenu(R.drawable.member_data,"ข้อมูลผู้เช่า",""),
+        AdminHomeMenu(R.drawable.all_room,"ห้องพัก",""),
+        AdminHomeMenu(R.drawable.other_detail,"เพิ่มเติม","")
     )
 
     Column (
@@ -95,14 +110,14 @@ fun HomeAdminScreen(navController : NavHostController){
         ){
             Column (
                 modifier = Modifier.fillMaxWidth()
-                    .padding(vertical = 25.dp),
+                    .padding(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Image(
-                    painter = painterResource(R.drawable.example_pic1),
+                    painter = painterResource(R.drawable.example_pic10),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
-                    modifier = Modifier.width(330.dp).height(201.dp)
+                    modifier = Modifier.width(361.dp).height(111.dp)
                 )
             }
         }
@@ -112,73 +127,226 @@ fun HomeAdminScreen(navController : NavHostController){
         Column (
             modifier = Modifier.fillMaxWidth()
                 .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ){
             Text(
-                text = "กิจกรรม",
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 26.sp,
-                modifier = Modifier.padding(start = 5.dp, bottom = 8.dp)
+                text = "แจ้งซ่อม",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 5.dp , bottom = 10.dp)
                     .align(Alignment.Start)
             )
 
             Card (
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = Color.LightGray
-                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 )
             ){
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
+                Row (
                     modifier = Modifier.fillMaxWidth()
-                        .height(500.dp),
-                    contentPadding = PaddingValues(20.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    items(menuList) {menu->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Card (
-                                shape = RoundedCornerShape(10.dp),
-                                elevation = CardDefaults.cardElevation(
-                                    defaultElevation = 4.dp
-                                ),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color(172, 198, 255, 255)
-                                ),
-                                modifier = Modifier.size(80.dp)
-                                    .clickable {
-
-                                    }
-                            ){
-                                Column(
-                                    modifier = Modifier.fillMaxSize(),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Image(
-                                        painter = painterResource(menu.icon),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier.size(40.dp)
-                                    )
-                                }
-                            }
-
-                            Text(
-                                text = menu.title,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.width(80.dp)
+                        .padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ){
+                    repairList.forEach { repair->
+                        Card (
+                            modifier = Modifier.size(100.dp)
+                                .clickable {
+                                    navController.navigate(repair.navigateTo)
+                                },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(215,227,255)
                             )
+                        ){
+                            Column (
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ){
+                                Image(
+                                    painter = painterResource(repair.icon),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.size(60.dp)
+                                )
+
+                                Text(
+                                    text = repair.title,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Column (
+            modifier = Modifier.fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
+            Text(
+                text = "เกี่ยวกับสัญญา",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 5.dp , bottom = 10.dp)
+                    .align(Alignment.Start)
+            )
+
+            Card (
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                )
+            ){
+                Row (
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ){
+                    contractList.forEach { contract->
+                        Card (
+                            modifier = Modifier.size(100.dp)
+                                .clickable {
+                                    navController.navigate(contract.navigateTo)
+                                },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(215,227,255)
+                            )
+                        ){
+                            Column (
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ){
+                                Image(
+                                    painter = painterResource(contract.icon),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.size(60.dp)
+                                )
+
+                                Text(
+                                    text = contract.title,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Column (
+            modifier = Modifier.fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
+            Text(
+                text = "กิจกรรมอื่นๆ",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 5.dp , bottom = 10.dp)
+                    .align(Alignment.Start)
+            )
+
+            Card (
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                )
+            ){
+                Row (
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ){
+                    otherFirstLine.forEach { first->
+                        Card (
+                            modifier = Modifier.size(100.dp)
+                                .clickable {
+                                    navController.navigate(first.navigateTo)
+                                },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(215,227,255)
+                            )
+                        ){
+                            Column (
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ){
+                                Image(
+                                    painter = painterResource(first.icon),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.size(60.dp)
+                                )
+
+                                Text(
+                                    text = first.title,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Row (
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ){
+                    otherSecondLine.forEach { second->
+                        Card (
+                            modifier = Modifier.size(100.dp)
+                                .clickable {
+
+                                },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(215,227,255)
+                            )
+                        ){
+                            Column (
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ){
+                                Image(
+                                    painter = painterResource(second.icon),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.size(60.dp)
+                                )
+
+                                Text(
+                                    text = second.title,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp
+                                )
+                            }
                         }
                     }
                 }

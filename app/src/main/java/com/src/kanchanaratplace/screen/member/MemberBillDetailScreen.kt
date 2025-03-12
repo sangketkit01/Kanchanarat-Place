@@ -47,6 +47,7 @@ import com.src.kanchanaratplace.api_util.getOneRoomUtility
 import com.src.kanchanaratplace.component.SampleScaffold
 import com.src.kanchanaratplace.data.Bill
 import com.src.kanchanaratplace.data.DefaultRooms
+import com.src.kanchanaratplace.data_util.Receipt
 import com.src.kanchanaratplace.navigation.Screen
 import com.src.kanchanaratplace.session.MemberSharePreferencesManager
 import com.src.kanchanaratplace.status.OtherStatus
@@ -101,13 +102,13 @@ fun MemberBillDetailScreen(navController : NavHostController){
                     electricalBill = (billData?.electricityUsed ?: 0) * 8
 
                     when(billData?.statusId){
-                        OtherStatus.PENDING.code -> {
+                        OtherStatus.PENDING.id -> {
                             status = "ค้างชำระ"
                         }
-                        OtherStatus.EXPIRED.code -> {
+                        OtherStatus.EXPIRED.id -> {
                             status = "เลยกำหนดเวลา"
                         }
-                        OtherStatus.SUCCESS.code -> {
+                        OtherStatus.SUCCESS.id -> {
                             status = "ชำระแล้ว"
                             dot = R.drawable.green_dot
                         }
@@ -372,34 +373,67 @@ fun MemberBillDetailScreen(navController : NavHostController){
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                val isPaid = billData?.statusId == OtherStatus.SUCCESS.code
+                val isPaid = billData?.statusId == OtherStatus.SUCCESS.id
                 val buttonText = if (isPaid) "ชำระแล้ว" else "ชำระเงิน"
                 val buttonColor = if (isPaid) Color(200, 200, 200, 255) else Color(94, 144, 255, 255)
                 val isButtonEnabled = !isPaid
 
-                Button(
-                    onClick = {
-                        if (!isPaid) {
-                            navController.currentBackStackEntry?.savedStateHandle?.set(
-                                "bill_data",billData
+                if(!isPaid){
+                    Button(
+                        onClick = {
+                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                    "bill_data",billData
+                                )
+                                navController.navigate(Screen.MemberCheckBill.route)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = buttonColor,
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier.width(226.dp).height(39.dp),
+                    ) {
+                        Text(
+                            text = buttonText,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
+                        )
+                    }
+                }else{
+                    Button(
+                        onClick = {
+                            val receiptData = listOf<Receipt>(
+                                Receipt("ค่าห้อง",4000),
+                                Receipt("ค่าน้ำ",waterBill),
+                                Receipt("ค่าไฟ",electricalBill),
                             )
-                            navController.navigate(Screen.MemberCheckBill.route)
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = buttonColor,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier.width(226.dp).height(39.dp),
-                    enabled = isButtonEnabled
-                ) {
-                    Text(
-                        text = buttonText,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
-                    )
-                }
 
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "name",sharePreferences.member?.name
+                            )
+
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "receipt_data",receiptData
+                            )
+
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "total_price",billData?.totalPrice ?: 0
+                            )
+
+                            navController.navigate(Screen.Receipt.route)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(94, 144, 255, 255),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier.width(226.dp).height(39.dp),
+                    ) {
+                        Text(
+                            text = "ดูใบเสร็จ",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(30.dp))
 

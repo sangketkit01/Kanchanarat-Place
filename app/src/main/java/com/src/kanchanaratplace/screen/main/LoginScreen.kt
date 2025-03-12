@@ -1,6 +1,7 @@
 package com.src.kanchanaratplace.screen.main
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,7 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
+import com.src.kanchanaratplace.R
 import com.src.kanchanaratplace.api.MemberAPI
 import com.src.kanchanaratplace.component.BaseScaffold
 import com.src.kanchanaratplace.data.Member
@@ -131,6 +135,15 @@ fun LoginScreen(navController : NavHostController){
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
+
+                Image(
+                    painter = painterResource(R.drawable.login),
+                    contentScale = ContentScale.Fit,
+                    contentDescription = null,
+                    modifier = Modifier.padding(vertical = 10.dp , horizontal = 25.dp)
+                        .fillMaxWidth().height(175.dp)
+                )
+
                 Text(
                     text = "เข้าสู่ระบบ",
                     fontSize = 18.sp,
@@ -231,7 +244,7 @@ fun LoginScreen(navController : NavHostController){
                                         sharePreferences.loggedIn = true
                                         sharePreferences.member = response.body()!!
 
-                                        if(sharePreferences.member?.roleId == Role.OWNER.code){
+                                        if(sharePreferences.member?.roleId == Role.OWNER.id){
                                             navController.navigate(Screen.HomeAdmin.route)
                                         }else{
                                             navController.navigate(Screen.First.route)

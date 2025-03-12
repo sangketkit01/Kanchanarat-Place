@@ -291,7 +291,7 @@ fun BillEditScreen(navController : NavHostController){
                                 electricalUsed.toFloatOrNull() ?: 0f,
                                 (4000+waterBill+electricalBill).toFloat(),
                                 LocalDate.now().toString(),
-                                OtherStatus.PENDING.code
+                                OtherStatus.PENDING.id
                             )
                             createBillUtility(
                                 bill,

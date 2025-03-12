@@ -81,15 +81,13 @@ fun MemberApartmentScreen(navController : NavHostController){
 
     val firstRowMenu = listOf(
         MemberApartmentMenu(painterResource(R.drawable.bill_menu),"บิลค่าเช่า",Screen.MemberBill.route),
-        MemberApartmentMenu(painterResource(R.drawable.repair_menu),"แจ้งซ่อม",Screen.First.route),
-        MemberApartmentMenu(painterResource(R.drawable.package_menu),"พัสดุ",Screen.First.route),
+        MemberApartmentMenu(painterResource(R.drawable.repair_menu),"แจ้งซ่อม",Screen.RepairForm.route),
         MemberApartmentMenu(painterResource(R.drawable.news_menu),"ข่าวสาร",Screen.News.route)
     )
 
     val secondRowMenu = listOf(
-        MemberApartmentMenu(painterResource(R.drawable.leave_menu),"แจ้งย้ายออก",Screen.First.route),
-        MemberApartmentMenu(painterResource(R.drawable.truck_menu),"ขนของ",Screen.First.route),
-        MemberApartmentMenu(painterResource(R.drawable.contract_menu),"สัญญา",Screen.First.route),
+        MemberApartmentMenu(painterResource(R.drawable.leave_menu),"แจ้งย้ายออก",Screen.LeavingForm.route),
+        MemberApartmentMenu(painterResource(R.drawable.contract_menu),"สัญญา",Screen.MemberContract.route),
         MemberApartmentMenu(painterResource(R.drawable.info_menu),"คู่มือ",Screen.First.route)
     )
 
@@ -188,7 +186,7 @@ fun MemberApartmentScreen(navController : NavHostController){
                 Row (
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = 15.dp, vertical = 15.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceAround
                 ){
                     firstRowMenu.forEach { menu->
                         Column (
@@ -229,14 +227,16 @@ fun MemberApartmentScreen(navController : NavHostController){
                 Row (
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = 15.dp, vertical = 15.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceAround
                 ){
                     secondRowMenu.forEach { menu->
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    navController.navigate(menu.navigateTo)
+                                },
                                 shape = RoundedCornerShape(10.dp),
                                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(172, 198, 255, 255)),
@@ -309,17 +309,17 @@ fun MemberApartmentScreen(navController : NavHostController){
                             var mainImage by remember { mutableIntStateOf(0) }
 
                             when(billData!!.statusId){
-                                OtherStatus.PENDING.code -> {
+                                OtherStatus.PENDING.id -> {
                                     status = "ค้างชำระ"
                                     statusImage = R.drawable.red_warning
                                     mainImage = R.drawable.red_paper
                                 }
-                                OtherStatus.EXPIRED.code -> {
+                                OtherStatus.EXPIRED.id -> {
                                     status = "เลยกำหนดเวลา"
                                     statusImage = R.drawable.red_warning
                                     mainImage = R.drawable.red_paper
                                 }
-                                OtherStatus.SUCCESS.code -> {
+                                OtherStatus.SUCCESS.id -> {
                                     status = "ชำระแล้ว"
                                     statusImage = R.drawable.check_green
                                     mainImage = R.drawable.green_paper

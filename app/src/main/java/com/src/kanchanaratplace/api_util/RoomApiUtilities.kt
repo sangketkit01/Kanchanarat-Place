@@ -2,6 +2,7 @@ package com.src.kanchanaratplace.api_util
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.google.gson.JsonObject
 import com.src.kanchanaratplace.api.RoomAPI
 import com.src.kanchanaratplace.data.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -13,6 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 
 object RoomClient {
     val instance: RoomAPI by lazy { RoomAPI.create() }
@@ -85,7 +87,7 @@ fun approveReservationUtility(reservationId: Int, onResponse: (ResponseBody) -> 
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun insertContractUtility(roomId: Int,reservationId: Int, contractDetail: String, contractLength: Int,
-                          slipPath: MultipartBody.Part,
+                          contractPath : MultipartBody.Part,slipPath: MultipartBody.Part,
                           onResponse: (ResponseBody) -> Unit, onElse: (Response<ResponseBody>) -> Unit,
                           onFailure: (Throwable) -> Unit) {
     val expireAt = LocalDateTime.now().plusMonths(6).format(DateTimeFormatter
@@ -96,6 +98,7 @@ fun insertContractUtility(roomId: Int,reservationId: Int, contractDetail: String
         reservationId.toRequestBody(),
         contractDetail.toRequestBody(),
         contractLength.toRequestBody(),
+        contractPath,
         slipPath,
         expireAt
     ).enqueueCallback(onResponse, onElse, onFailure)
@@ -109,6 +112,154 @@ fun getNewContractsUtility(onResponse: (List<Contract>) -> Unit, onElse: (Respon
 fun approveContractUtility(contractId : Int, onResponse: (ResponseBody) -> Unit,
                            onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit){
     RoomClient.instance.approveContract(contractId).enqueueCallback(onResponse,onElse,onFailure)
+}
+
+fun getRoomContractUtility(roomId: Int, onResponse: (Contract) -> Unit,
+                           onElse: (Response<Contract>) -> Unit, onFailure: (Throwable) -> Unit) {
+    RoomClient.instance.getRoomContract(roomId).enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun insertRepairUtility(
+    roomId : Int, repairTitle : String, repairDetail : String,
+    onResponse: (JsonObject) -> Unit, onElse: (Response<JsonObject>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.insertRepair(roomId,repairTitle,repairDetail)
+        .enqueueCallback(onResponse,onElse, onFailure)
+}
+
+fun insertRepairImagesUtility(
+    repairId : Int, imagePath : MultipartBody.Part, onResponse: (ResponseBody) -> Unit,
+    onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.insertRepairImages(repairId,imagePath)
+        .enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun insertRepairDetailUtility(
+    repairId: Int, repairDetailDetail : String, repairDetailCostDetail : String,
+    onResponse: (ResponseBody) -> Unit, onElse: (Response<ResponseBody>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.insertRepairDetail(repairId,repairDetailDetail,repairDetailCostDetail)
+        .enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun insertRepairDetailImageUtility(
+    repairId: Int, repairDetailImagePath : MultipartBody.Part,
+    onResponse: (ResponseBody) -> Unit, onElse: (Response<ResponseBody>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.insertRepairDetailImage(repairId,repairDetailImagePath)
+        .enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun getUnapprovedRepairUtility(
+    onResponse: (List<Repair>) -> Unit, onElse: (Response<List<Repair>>)-> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.getUnapprovedRepair().enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun getApprovedRepairUtility(
+    onResponse: (List<Repair>) -> Unit, onElse: (Response<List<Repair>>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.getApprovedRepair().enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun getSuccessRepairUtility(
+    onResponse: (List<Repair>) -> Unit, onElse: (Response<List<Repair>>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.getSuccessRepair().enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun getRepairImages(
+    repairId : Int, onResponse: (List<RepairImages>) -> Unit, onElse: (Response<List<RepairImages>>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.getRepairImage(repairId).enqueueCallback(onResponse,onElse,onFailure)
+}
+
+fun approveRepairUtility(
+    repairId: Int , onResponse: (ResponseBody) -> Unit , onElse: (Response<ResponseBody>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.approveRepair(repairId).enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun updateRepairCostStatusUtility(
+    repairId: Int, repairCost : Int, statusId : Int,
+    onResponse: (ResponseBody) -> Unit, onElse: (Response<ResponseBody>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.updateRepairCostStatus(repairId,repairCost, statusId)
+        .enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun getRepairDetailUtility(
+    repairId: Int, onResponse: (RepairDetail) -> Unit,
+    onElse: (Response<RepairDetail>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.getRepairDetail(repairId).enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun getRepairDetailImageUtility(
+    repairId: Int, onResponse: (List<RepairDetailImage>) -> Unit,
+    onElse: (Response<List<RepairDetailImage>>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.getRepairDetailImages(repairId).enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun insertLeavingUtility(
+    roomId: Int, reportDate : String, moveOutDate : String, reason : String,
+    otherDetail : String, onResponse: (ResponseBody) -> Unit,
+    onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.insertLeaving(roomId, reportDate, moveOutDate, reason, otherDetail)
+        .enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun getUnapprovedLeavingUtility(
+    onResponse: (List<Leaving>) -> Unit, onElse: (Response<List<Leaving>>) -> Unit,
+    onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.getUnapprovedLeaving().enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun getMemberByRoomUtility(
+    roomId: Int, onResponse: (Member) -> Unit,
+    onElse: (Response<Member>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.getMemberByRoom(roomId).enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun approveLeavingUtility(
+    leavingId : Int, onResponse: (ResponseBody) -> Unit,
+    onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.approveLeaving(leavingId).enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun rejectLeavingUtility(
+    leavingId: Int, rejectReason : String, onResponse: (ResponseBody) -> Unit,
+    onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    RoomClient.instance.rejectLeaving(leavingId,rejectReason).enqueueCallback(onResponse, onElse, onFailure)
+}
+
+fun updateProfileUtility(
+    memberId : Int , name : String , email : String , phone : String , birth : String,
+    imagePath: MultipartBody.Part?, onResponse: (ResponseBody) -> Unit
+    , onElse: (Response<ResponseBody>) -> Unit, onFailure: (Throwable) -> Unit
+){
+    val nameBody = name.toRequestBody()
+    val emailBody = email.toRequestBody()
+    val phoneBody = phone.toRequestBody()
+    val birthBody = birth.toRequestBody()
+    RoomClient.instance.updateProfile(memberId,nameBody,emailBody,phoneBody,birthBody,imagePath)
+        .enqueueCallback(onResponse, onElse, onFailure)
 }
 
 private fun String.toRequestBody() = this.toRequestBody("text/plain".toMediaTypeOrNull())

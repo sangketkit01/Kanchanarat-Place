@@ -199,6 +199,11 @@ fun ContractFeeScreen(navController : NavHostController){
                 navController.currentBackStackEntry?.savedStateHandle?.set(
                     "reservation_data",reservedData
                 )
+                navController.currentBackStackEntry?.savedStateHandle
+                    ?.set(
+                        "contract_path",
+                        navController.previousBackStackEntry?.savedStateHandle?.get<String>("contract_path")
+                    )
                 navController.navigate(Screen.ContractFeeDetail.route)
             },
             colors = ButtonDefaults.filledTonalButtonColors(

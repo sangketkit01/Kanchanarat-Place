@@ -154,17 +154,17 @@ fun MemberBillScreen(navController : NavHostController){
                 var mainImage by remember { mutableIntStateOf(0) }
 
                 when(billData.statusId){
-                    OtherStatus.PENDING.code -> {
+                    OtherStatus.PENDING.id -> {
                         status = "ค้างชำระ"
                         statusImage = R.drawable.red_warning
                         mainImage = R.drawable.red_paper
                     }
-                    OtherStatus.EXPIRED.code -> {
+                    OtherStatus.EXPIRED.id -> {
                         status = "เลยกำหนดเวลา"
                         statusImage = R.drawable.red_warning
                         mainImage = R.drawable.red_paper
                     }
-                    OtherStatus.SUCCESS.code -> {
+                    OtherStatus.SUCCESS.id -> {
                         status = "ชำระแล้ว"
                         statusImage = R.drawable.check_green
                         mainImage = R.drawable.green_paper

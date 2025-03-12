@@ -85,11 +85,12 @@ fun QRCodeScreen(navController : NavHostController){
     val next = navController.previousBackStackEntry?.savedStateHandle?.get<String>("next")
     val previousRoute = navController.previousBackStackEntry?.savedStateHandle?.get<String>("previous_route")
     val reservation = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation")
+    val contractPath = navController.previousBackStackEntry?.savedStateHandle?.get<String>("contract_path")
 
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    fun Context.getImagePart(uri: Uri): MultipartBody.Part {
+    fun Context.getImagePart(uri: Uri , name : String): MultipartBody.Part {
         val stream = contentResolver.openInputStream(uri)
         val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
         val request = stream?.let {
@@ -106,7 +107,7 @@ fun QRCodeScreen(navController : NavHostController){
         val filename = "image_${uuid}${extension}"
 
         return MultipartBody.Part.createFormData(
-            "slip_part",
+            name,
             filename,
             request!!
         )
@@ -255,8 +256,9 @@ fun QRCodeScreen(navController : NavHostController){
                 text = "ชำระเงิน",
                 onClick = {
                     if (next != null && previousRoute == Screen.PayReservation.route) {
+                        Log.e("Error","Haha")
                         selectedImageUri?.let { uri ->
-                            val imagePart = context.getImagePart(uri)
+                            val imagePart = context.getImagePart(uri,"slip_path")
                             reservingRoomUtility(
                                 reservation?.roomId ?: 0,
                                 reservation?.statusId ?: 0,
@@ -289,6 +291,7 @@ fun QRCodeScreen(navController : NavHostController){
                                 },
                                 onElse = { els ->
                                     Toast.makeText(context, "Reserve Failed + ${reservation?.roomId}", Toast.LENGTH_SHORT).show()
+                                    Log.e("Error",els.message())
                                 },
                                 onFailure = { t ->
                                     Toast.makeText(context, "Error Check LogCat", Toast.LENGTH_SHORT).show()
@@ -302,12 +305,18 @@ fun QRCodeScreen(navController : NavHostController){
                     if(next != null && previousRoute == Screen.ContractFeeDetail.route){
                         val reservedData = navController.previousBackStackEntry?.savedStateHandle?.get<Reservation>("reservation_data")
                         selectedImageUri?.let { uri ->
-                            val imagePart = context.getImagePart(uri)
+                            val imagePart = context.getImagePart(uri, "slip_path")
+                            val contractPart = context.getImagePart(Uri.parse(contractPath), "contract_path")
+
+                            Log.d("DEBUG", "slip_path Name: ${imagePart.body.contentType()}")
+                            Log.d("DEBUG", "contract_path Name: ${contractPart.body.contentType()}")
+
                             insertContractUtility(
                                 reservedData?.roomId ?: 0,
                                 reservedData?.reservationId ?: 0,
                                 "Hello World",
                                 ContractEnum.StartContract.length,
+                                contractPart,
                                 imagePart,
                                 onResponse = {
                                     Toast.makeText(context,"ทำสัญญาสำเร็จ รอการอนุมัติ",Toast.LENGTH_SHORT).show()

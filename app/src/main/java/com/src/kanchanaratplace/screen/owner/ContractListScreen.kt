@@ -104,31 +104,6 @@ fun ContractListScreen(navController : NavHostController){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(240, 240, 240))
-        ) {
-            ButtonWithBadge(
-                text = "อนุมัติการจอง",
-                badgeCount = 1,
-                modifier = Modifier.weight(1f),
-                background = Color(240, 240, 240, 255),
-                onClick = {
-                    navController.navigate(Screen.ReservedList.route)
-                }
-            )
-            ButtonWithBadge(
-                text = "ทำสัญญา",
-                badgeCount = contractList.size,
-                modifier = Modifier.weight(1f),
-                background = Color.White,
-                onClick = {
-                    navController.navigate(Screen.ContractList.route)
-                }
-            )
-        }
-
         contractList.forEach { contract->
             var room by remember { mutableStateOf<DefaultRooms?>(null) }
             var reservation by remember { mutableStateOf<Reservation?>(null) }

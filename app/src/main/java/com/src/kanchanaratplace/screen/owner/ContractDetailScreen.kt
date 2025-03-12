@@ -55,6 +55,7 @@ import com.src.kanchanaratplace.component.SmallWhiteBlueButton
 import com.src.kanchanaratplace.data.Contract
 import com.src.kanchanaratplace.data.DefaultRooms
 import com.src.kanchanaratplace.data.Reservation
+import com.src.kanchanaratplace.navigation.Screen
 
 @Composable
 fun ContractDetailScaffold(navController: NavHostController){
@@ -73,6 +74,7 @@ fun ContractDetailScreen(navController : NavHostController){
     var contractSlipAlert by remember { mutableStateOf(false) }
     var feeSlipAlert by remember { mutableStateOf(false) }
     var approveAlert by remember { mutableStateOf(false) }
+    var contractAlert by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -305,10 +307,10 @@ fun ContractDetailScreen(navController : NavHostController){
                         verticalAlignment = Alignment.CenterVertically
                     ){
                         Text(
-                            text = "ยังไม่กรอก",
-                            color = Color(163, 163, 163, 255),
+                            text = "กรอกแล้ว",
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp
+                            fontSize = 16.sp,
+                            color = Color(50, 161, 41, 255)
                         )
 
                         Spacer(modifier = Modifier.width(5.dp))
@@ -317,14 +319,18 @@ fun ContractDetailScreen(navController : NavHostController){
                             painter = painterResource(R.drawable.check_green),
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
-                            tint = Color(163, 163, 163, 255)
+                            tint = Color(20, 174, 92, 255)
                         )
                     }
 
                     SmallWhiteBlueButton(
                         text = "พิมพ์ใบทำสัญญา",
                         onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "contract_path",contractData?.contractPath
+                            )
 
+                            navController.navigate(Screen.ContractDetailPaper.route)
                         }
                     )
                 }
